@@ -60,8 +60,54 @@ public void m1() {
     B b = new b; // 此方式非直接朋友
 }
 ```
-# 22
-- 合成復用原則
+- 合成復用原則（Composite Reuse Principle）
+    - 盡量使用合成/聚合的方式，而非繼層
+```java
+// 繼層，耦合太高
+class A {
+    public void method(){};
+    public void method2(){};
+    public void method3(){};
+}
+class B extends A {
+    
+}
+// 合成、依賴
+class A {
+    public void method(){};
+    public void method2(){};
+    public void method3(){};
+}
+class B {
+    public void method3(A a){};
+}
+// 聚合
+class A {
+    public void method(){};
+    public void method2(){};
+    public void method3(){};
+}
+class B {
+    A a;
+    public void setA(A a){};
+}
+// 組合
+class A {
+    public void method(){};
+    public void method2(){};
+    public void method3(){};
+}
+class B {
+    A a = new A();
+}
+```
+
+### 設計原則核心
+- 找出可能需要變化之處，並將他們獨立，不要和不需要變化代碼混合
+- 面對*接口編程*，而不是針對*實現編程*
+- 為了交互對象之間的鬆耦合設計
+
+# 25
 
 ## 狀態模式
 
