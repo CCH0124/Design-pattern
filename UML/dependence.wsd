@@ -1,0 +1,26 @@
+@startuml
+
+Class PersonServiceean{
+    - PersonDao personDao
+    + void  save(Person person)
+    + IDCard getIDCard(Integer personid)
+    + void modify()
+}
+class IDCard {
+
+}
+class Person {
+
+}
+class PersonDao{
+
+}
+class Deparment {
+
+}
+
+PersonServiceean ..> IDCard: Dependency
+PersonServiceean ..> Person: Dependency
+PersonServiceean ..> PersonDao: Dependency
+PersonServiceean ..> Deparment: Dependency
+@enduml
