@@ -1,0 +1,19 @@
+@startuml
+
+note top of Computer : Mouse 和 Moniter 可熱插拔
+class Computer {
+    - Mouse mouse()
+    - Moniter moniter()
+}
+
+class Mouse {
+
+}
+
+class Moniter {
+
+}
+
+Computer o-- Mouse
+Computer o-- Moniter
+@enduml
