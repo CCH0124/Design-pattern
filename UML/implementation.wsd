@@ -1,0 +1,11 @@
+@startuml
+
+interface PersonService {
+    + void delete(Integer id)
+}
+
+class PersonServiceBean implements PersonService {
+    + void delete(Integer id)
+}
+
+@enduml

@@ -116,9 +116,11 @@ class B {
 - 方法中使用到
 
 ### Generalization
-簡單來說就是繼層關係
+- 簡單來說就是繼層關係
+- A 繼層 B，可說 A 和 B 存在 Generalization 關係
 
-
+### Implementation
+- A 實現 B
 
 ## 狀態模式
 
