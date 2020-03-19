@@ -3,8 +3,6 @@ package factory.simplefactory.pizzastore.order;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import factory.simplefactory.pizzastore.pizza.CheesePizza;
-import factory.simplefactory.pizzastore.pizza.GreekPizza;
 import factory.simplefactory.pizzastore.pizza.Pizza;
 
 public class OrderPizza {
@@ -13,24 +11,49 @@ public class OrderPizza {
      * 時只需修改該類即可，有創見 Pizza 物件的代碼則不需修改
      */
 
-    public OrderPizza() {
-        Pizza pizza = null;
+    // public OrderPizza() {
+    // Pizza pizza = null;
+    // String orderType;
+    // do {
+    // orderType = getType();
+    // if (orderType.equals("greek")) {
+    // pizza = new GreekPizza();
+    // pizza.setName("Greek Pizza");
+    // } else if (orderType.equals("cheese")) {
+    // pizza = new CheesePizza();
+    // pizza.setName("Cheese Pizza");
+    // } else {
+    // break;
+    // }
+    // pizza.prepare();
+    // pizza.bake();
+    // pizza.cut();
+    // pizza.box();
+    // } while (true);
+    // }
+
+    SimpleFactory simpleFactory;
+    Pizza pizza = null;
+
+    public OrderPizza(SimpleFactory simpleFactory) {
+        setFactory(simpleFactory);
+    }
+
+    public void setFactory(SimpleFactory simpleFactory) {
         String orderType;
+        this.simpleFactory = simpleFactory;
         do {
             orderType = getType();
-            if (orderType.equals("greek")) {
-                pizza = new GreekPizza();
-                pizza.setName("Greek Pizza");
-            } else if (orderType.equals("cheese")) {
-                pizza = new CheesePizza();
-                pizza.setName("Cheese Pizza");
+            pizza = this.simpleFactory.createPizza(orderType);
+            if (pizza != null) {
+                pizza.prepare();
+                pizza.bake();
+                pizza.cut();
+                pizza.box();
             } else {
+                System.out.println("Order fail");
                 break;
             }
-            pizza.prepare();
-            pizza.bake();
-            pizza.cut();
-            pizza.box();
         } while (true);
     }
 
