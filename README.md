@@ -217,3 +217,11 @@ class B {
     - 此方法，**將對象實例化延遲到子類**
 - 實例化功能抽象成*抽象方法*，在不同的子類中在具體實現
 
+## 抽象工廠模式
+- 定義一個 `interface` 用於創建相關或有依賴關係的物件群，無須指名具體類
+- 可將 `Simple Factory Pattern` 和 `Factory method pattern` 進行整合
+- 從設計層面看，此模式就是對 `Simple Factory Pattern` 進一步*抽象*
+- 將工廠抽象兩層
+    - AbsFactory
+    - 具體實現的工廠子類
+        - 可根據創建物件類型使用相對應的工廠子類
