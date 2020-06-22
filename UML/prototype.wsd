@@ -1,0 +1,19 @@
+note right of Prototype : 宣告一個克隆自己的 interface
+interface Prototype {
+    + Clone()
+}
+note top of Client : 讓一個原型物件克隆自己，重而創建一個新的物件
+class Client {
+
+}
+
+note top of ConcretePrototype1 : 具體的原型類，實現一個克隆自己的操作
+class ConcretePrototype1 extends Prototype {
+    + Clone()
+}
+
+class ConcretePrototype2 extends Prototype {
+    + Clone()
+}
+
+Client --> Prototype
