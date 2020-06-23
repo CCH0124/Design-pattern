@@ -1,0 +1,37 @@
+note top of Hourse : product
+class Hourse {
+
+}
+
+class HourseBuilder {
+    + Hourse hourse
+    + void buildBasic
+    + void buildWalls
+    + void roofed
+    + Hourse build
+}
+
+note left of CommonHourse : ConcreteBuilder
+class CommonHourse extends HourseBuilder {
+
+} 
+note left of HighBuilding : ConcreteBuilder
+class HighBuilding extends HourseBuilder {
+    
+} 
+
+class HourseDirector {
+    HourseBuilder hourseBuilder
+}
+
+class Client {
+
+}
+
+HourseDirector o-- HourseBuilder
+
+Client ..> HourseDirector
+Client ..> CommonHourse
+Client ..> HighBuilding
+
+HourseBuilder *-- Hourse
