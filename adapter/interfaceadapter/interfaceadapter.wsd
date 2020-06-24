@@ -1,0 +1,20 @@
+interface Interface4 {
+    + void operation1()
+    + void operation2()
+    + void operation3()
+    + void operation4()
+}
+note right of AbsAdapter : 默認實現接口所有方法
+abstract AbsAdapter implements Interface4 {
+
+}
+
+
+class A {
+
+}
+
+A ..> AbsAdapter
+
+
+
