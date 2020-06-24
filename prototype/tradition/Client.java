@@ -1,4 +1,4 @@
-package prototype;
+package prototype.tradition;
 
 public class Client {
     Sheep sheep = new Sheep("tom", 5, "black");
