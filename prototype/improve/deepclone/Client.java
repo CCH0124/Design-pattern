@@ -1,4 +1,4 @@
-package prototype.improve;
+package prototype.improve.deepclone;
 
 public class Client {
     public static void main(String[] args) throws CloneNotSupportedException {

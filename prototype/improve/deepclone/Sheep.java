@@ -1,4 +1,4 @@
-package prototype.improve;
+package prototype.improve.deepclone;
 
 public class Sheep implements Cloneable{
     private String name ;
