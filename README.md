@@ -366,3 +366,18 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
     - 定義具體行爲、具體特徵的接口
 - ConcreteImplementor
     - 實現 Implementor 行為的具體類
+
+## 裝飾者模式(Decorator Pattern)
+- *動態*的將新功能**附加到物件上**
+    - 在物件擴展方面，比繼承更有彈性
+- 體現開閉原則(OCP)
+
+### 原理
+- Compoenet 
+    - 被裝飾者，衣服、陶瓷、drink 等
+- ConcreateCompoenet 和 Decorator
+    - ConcreateCompoenet 
+        - 具體主題，咖啡等
+    - Decorator 
+        - 裝飾者，調料
+- JAVA IO 類別 FileInputStream 實現裝飾者
