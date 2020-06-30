@@ -1,0 +1,24 @@
+class TeacherDAO {
+    + void teach()
+}
+
+interface MethodInterceptor  {
+
+}
+
+' getProxyInstance 給目標物件 target 創建一個代理物件
+' 重寫 intecept，實現被代理物件(目標物件)方法執行調用
+
+class ProxyFactory implements MethodInterceptor {
+    - Object target
+    + void ProxyFactory
+    + Object getProxyInstance()
+    + void intecept()
+}
+
+class Client {
+
+}
+
+Client ..> TeacherDAO
+Client ..> ProxyFactory
