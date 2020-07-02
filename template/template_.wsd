@@ -1,0 +1,23 @@
+note left of SoyaMilk: add 會不一樣因此將它抽象
+abstract class SoyaMilk {
+    + void make()
+    + void select()
+    + void add()
+    + void soak()
+    + void beat()
+}
+
+class BlackBeanSoyaMilk extends SoyaMilk {
+
+}
+
+class PennuSoyaMilk extends SoyaMilk {
+    
+}
+
+class Client {
+
+}
+
+Client ..> SoyaMilk
+Client ..> BlackBeanSoyaMilk
