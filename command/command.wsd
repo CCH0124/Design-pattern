@@ -1,0 +1,42 @@
+interface Command {
+    + void execute()
+    + void undo()
+}
+
+class LightOnCommand implements Command {
+    + void execute()
+    + void undo()
+}
+
+class LightOffCommand implements Command {
+    + void execute()
+    + void undo()
+}
+
+
+class LightReceiver {
+    + void on()
+    + void off()
+}
+
+LightOnCommand o-- LightReceiver
+LightOffCommand o-- LightReceiver
+
+class RemoteController {
+    - Command[] onCommands
+    - Command[] offCommands
+}
+
+RemoteController o-- Command
+
+Class Client {
+
+}
+' 簡化判斷空命令
+class NoCommand implements Command {
+
+}
+Client ..> RemoteController
+Client ..> LightOnCommand
+Client ..> LightOffCommand
+Client ..> LightReceiver
