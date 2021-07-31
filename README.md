@@ -25,6 +25,7 @@
     - 邏輯夠簡單可違反，類中方法足夠少可在方法上實現單一職責
 - 接口隔離原則（Interface Segregation Principle）
     - 客戶端不應該依賴它不需要的接口，即一個類對另一個類的依賴應該建立在最小接口上
+    - [範例](principle/segregation/Segregation1.java)，改善後[範例](principle/segregation/improve/Segregation2.java)
 - 依賴倒轉原則（Dependence Inversion Principle）
     - 高層模組不應該依賴低層模組，兩者都應該依賴其抽象
     - 抽象不應該依賴細節，細節應該依賴抽象
@@ -34,22 +35,27 @@
         - 抽象指的是 interface 或 abstract，細節是具體實現類
     - 接口和抽象的目的就是制定規範，而不涉及任何具體操作，把展現細節任務交給他們的實現類去完成
     - 變量宣告類型盡量是抽象類或接口，這樣我們的變量引用和實際物件間，就存在者一層緩衝，益於擴展和優化
+    - [範例](principle/invervion/DependecyInversion.java)，改善後[範例](principle/invervion/improve/DependecyInversionType.java)
 - 里式替換原則（Liskov Substitution Principle）
     - 繼承時應該遵守
     - 繼承有些許弊端，如繼承鬼程序帶來侵入性，程序可移殖性降低，增加物件間的偶合性，父類的修改需要可慮繼承他的類別
     - 引用基類的地方能透明的使用其子類的物件
-    - 盡量不重寫父類的方法
+    - *盡量不重寫父類的方法*
     - 繼承讓偶合性增強，適當情況下，可透過`聚合`、`組合`、`依賴`來解決問題
+    - [範例](principle/liskov/Liskov.java)，改善後[範例](principle/liskov/improve/Liskov.java) 透過介面可讓不同通訊軟體定義訊息而 `receive` 並不用做任何變動
 - 開閉原則（Oprn Closed Principle）
-    - 一個軟體實體像是 `class`、`model`、`method` 應該對擴展開放，對修改關閉
-        - 抽象建構框架
+    - 一個軟體實體像是 `class`、`model`、`method` 應該*對擴展開放，對修改關閉*
+        - 抽象建構框架（使用*抽象*或*接口*類）
     - 軟體需變話時，盡量擴展（提供方）而不是透過修改（使用方）代碼實現
         - 新增方法，但對使用該方法的類不應該修改
     - 使用設計模式目的也是遵守該原則
+    - [範例](principle/ocp/Ocp.java)，改善後[範例](principle/ocp/improve/Ocp.java)
 - 迪米特原則（Demeter Principle）
     - 降低類之間的藕合，並非要求完全無依賴
     - 最少知道原則，一個類對自己依賴的類知道的越少越好
     - 只與直接朋友通訊
+    - [範例](principle/demeter/Demeter.java)，改善後[範例](principle/demeter/improve/Demeter.java)
+
 ```java
 B b;
 public void m1(B b) {
@@ -108,20 +114,35 @@ class B {
 - 為了交互對象之間的鬆耦合設計
 
 ## UML 類圖
+### Class
+[範例](UML/classDemo.wsd)
+
+- `+` 表示 `public`
+- `-` 表示 `private`
+- `#` 表示 `protected`
+
+Field 表示 權限 名稱 : 類型 [= 缺值]
+Method 表示 權限 名稱(參數列表) [: 返回類型]
+
 ### Dependence
-- 在類別中使用到對方，A 用到 B，A 依賴 B，沒 B 無法編譯通過
+- 在類別中使用到對方，A 用到 B，A 依賴 B，沒 B 無法編譯通過，是一種依賴關係
 - 為類的成員屬性
 - 為方法的返回類型
 - 是方法接受參數類型
 - 方法中使用到
 
+[範例](UML/dependence.wsd)
+
 ### Generalization
 - 簡單來說就是繼層關係，依賴關係的特例
 - A 繼層 B，可說 A 和 B 存在 Generalization 關係
+- 耦合最大的關係，
+[範例](UML/generalization.wsd)
 
 ### Implementation
 - A 實現 B，依賴關係的特例
 
+[範例](UML/implementation.wsd)
 
 ### Association
 - 類與類之間的關係，依賴關係的特例
@@ -132,17 +153,31 @@ class B {
     - 0, 1 表示 0 或一個
     - n...m n 到 m 個
     - m...* 至少 m 個
+
+1. 單向關聯
+
+[範例](UML/one-way-association.wsd)，Customer 擁有 Address
+
+2. 雙向關聯
+
+[範例](UML/two-way-association.wsd)，一個顧客有多個產品，產品被哪個客戶所購買
+
 ### Aggregation
 表示*整體*和*部分*的關係，整體和部分可分開，為關聯關係的特例。關係可以分開為*聚合*，不可分開則為*組合*
 
+[範例](UML/aggregation.wsd)，電腦沒有滑鼠或螢幕它們依舊存在。
+
 ### Composition
-表示*整體*和*部分*的關係，整體和部分不可分開
+表示*整體*和*部分*的關係，整體和部分不可分開。
+
+[範例](UML/composition.wsd)，沒有人，頭就不會存在。
 
 ## 設計模式類型
 
 - Creational 模式
-    - 如何有效率的產 生、管理 與操作物件，Creational 模式即與物件的建立相關。
+    - 如何有效率的產生、管理與操作物件，Creational 模式即與物件的建立相關。
     - 提供了對象創建機制，可以提高現有代碼的靈活性和重用性。
+    - 將物件的創建和使用分離
 - Structural 模式
     - 如何設計物件之間的靜態結構，如何完成物件之間的繼承、實現與依賴關係，這關乎著系統設計出來是否健壯（robust）：像是易懂、易維護、易修改、耦合度低等等議題。
     - 解釋瞭如何將對象和類組裝成更大的結構，同時保持結構的靈活性和有效性。
@@ -276,7 +311,7 @@ class B {
 ### 傳統方式
 - 傳統方式會導致效率低，不斷創建新物件，並一直重新獲取原始物件的屬性。
 - 不斷初始化物件，非動態獲取物件運行時的狀態，不夠靈活
-- 範例：`prototype\tradition`
+- 範例：`prototype/tradition`
 
 可以根據 JAVA 中根類 `Object` 的 `clone` 方法，其可複製一份物件。但須要實現 `Cloneable`，從而實現**原型模式**。
 
@@ -503,7 +538,7 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
 ### 鉤子方法
 - 定義一個方法，默認不做任何事，子類可選擇是否覆蓋，這稱為鉤子
 
-範例：`template\improve`
+範例：`template/improve`
 
 ## 命令模式（Command Pattern）
 - 在軟體設計中，我們經常需要向某些物件發 送請求，但並不知道請求接收者是誰，也不知道配請求的操作是哪個

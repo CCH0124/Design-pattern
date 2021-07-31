@@ -1,0 +1,9 @@
+@startuml
+class Employee {
+    - name : String 
+    - age: Integer
+    - address : String
+
+    + work() :void
+}
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+class Customer {
+    - products : List<Product>
+}
+
+class Product {
+    - customer : Customer
+}
+
+Customer --- Product
+@enduml

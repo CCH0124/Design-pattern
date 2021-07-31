@@ -1,0 +1,11 @@
+@startuml
+class Customer {
+    - address: Address
+}
+
+class Address {
+
+}
+
+Customer --> Address
+@enduml
