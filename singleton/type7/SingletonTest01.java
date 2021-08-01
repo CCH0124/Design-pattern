@@ -3,7 +3,7 @@ public class SingletonTest01{
     public static void main(String[] args) {
         Singleton a = Singleton.getInstance();
         Singleton b = Singleton.getInstance();
-        System.out.println(a == b);
+        System.out.println(a == b); 
         System.out.println(a.hashCode());
         System.out.println(b.hashCode());
     }
@@ -21,7 +21,7 @@ class Singleton {
         private static final Singleton INSTANCE = new Singleton();
     }
 
-    public static synchronized Singleton getInstance() {
+    public static Singleton getInstance() {
         return SingletonInstance.INSTANCE;
     }
 }
