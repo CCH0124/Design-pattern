@@ -24,4 +24,11 @@ class Singleton {
     public static Singleton getInstance() {
         return SingletonInstance.INSTANCE;
     }
+    /**
+     * 防止被反序化破壞
+     * @return
+     */
+    public Object readResolve() {
+        return SingletonInstance.INSTANCE;
+    }
 }
