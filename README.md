@@ -187,8 +187,6 @@ Method 表示 權限 名稱(參數列表) [: 返回類型]
 - 多執行續模式
     - 在很多應用中都會使用多執行緒，尤其是在Web應用中，多執行緒以 Gof 整理的模式為基礎，考量多執行緒環境中，如何組合這些基本模式來完成多執行緒安全要求。
 
-https://www.bilibili.com/video/BV1Np4y1z7BU?p=22&spm_id_from=pageDriver
-
 ## Singleton（單例設計模式）
 採取一定的方法保證在整個的軟體系統中，對某個類**只能存在一個物件實例**，且該類只提供一個取得物件實例的靜態方法，節省系統資源，並提高性能。可針對頻繁建立物件、創建物件時耗時過多的資源等。在 `Runtime` 類別中有使用此模式（餓漢模式）。
 
@@ -280,6 +278,8 @@ private static volatile Singleton instance;
 - 屬於**Creational** 模式，由一個工廠物件決定創建出哪一種產品類的實例
 - 定義了一個創建類物件的類，該類*封裝實例化物件的行為*
 - 當大量的創見某類、某批或某種物件時，會使用此模式
+
+[範例](factory/simplefactory/pizzastore)，pizza 目錄是創建 pizza 的地方，order 下 SimpleFactory、StaticSimpleFactory 則是實現此模式，PizzaStore 是商店程式入口。
 
 ### Factory method pattern（工廠方法模式）
 - 定義一個創建物件的抽象方法，由子類決定要實例化的類
