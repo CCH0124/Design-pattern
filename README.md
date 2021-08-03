@@ -297,6 +297,8 @@ private static volatile Singleton instance;
     - 具體實現的工廠子類
         - 可根據創建物件類型使用相對應的工廠子類
 
+[範例](factory/absfactory)
+
 ## 原型模式（Prototype）
 - 用原型實例指定創建物件的種類，定透過拷貝這些原型創建新物件
 - 為 `Creational Pattern`，允許一個物件再創建另外一個可制定的物件，但無須理解創建的細節
