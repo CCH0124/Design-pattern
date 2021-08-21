@@ -394,14 +394,18 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
 - src 類方法在 Adapter 會暴露出來，增加使用成本
 - 由於其繼承 src 類，因此可以重寫方法，讓 Adapter 靈活度提高
 
+[範例](adapter/classadapter)
+
 ### 物件適配器模式
 - 基本上和類適配器適相同，只是將 `Adapter` 類做修改，不是繼承 src 類，而是持有該實例，同樣也解決相容性問題。
     - 持有 src 實現 dst 完成適配
 - 根據**合成復用原則**，在系統中盡量使用關聯關係來替代繼承關係
     - 成本降低，更靈活
-
+[範例](adapter/objectadapter)
 ### 接口適配器
 - 當不需要全部實現街口提供的方法時，可先設計一個抽象類實現接口，並為該接口中每個方法提供一個默認實現(空方法)，此時該抽象類的子類可有選擇性覆蓋父類的某些方法來實現需求
+
+[範例](adapter/interfaceadapter)
 
 ## 橋接模式(Bridge pattern)
 - 將實現與抽象放在兩個不同層次中，使兩個層次可以獨立改變
@@ -414,6 +418,8 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
     - 聚合關聯關係建立在抽象層，要求開發者針對抽象進行設計和編碼
 - 需要正確識別抽象和實現的維度變化
     - 使用範圍有一定的侷限性
+
+[範例](bridge)
 ### [wiki 原理介紹](https://zh.wikipedia.org/wiki/%E6%A9%8B%E6%8E%A5%E6%A8%A1%E5%BC%8F)
 - 從裡面可以知道抽象類和接口適聚合的關係
 
@@ -434,6 +440,7 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
     - 在物件擴展方面，比繼承更有彈性
 - 體現開閉原則(OCP)
 
+[範例](decarotar)
 ### 原理
 - Compoenet 
     - 被裝飾者，衣服、陶瓷、drink 等
@@ -444,6 +451,7 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
         - 裝飾者，調料
 - JAVA IO 類別 FileInputStream 實現裝飾者
 
+> 在範例中 Drink 類是 Compoenet；ShortBlack 等就是咖啡
 ## 組合模式(Composite Pattern)
 - 創建物件組合的樹型結構
     - 以樹狀結構表示整體或部分層次關係
