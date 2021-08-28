@@ -22,7 +22,8 @@ class LightReceiver {
 LightOnCommand o-- LightReceiver
 LightOffCommand o-- LightReceiver
 
-class RemoteController {
+' 遙控器
+class RemoteController { 
     - Command[] onCommands
     - Command[] offCommands
 }
