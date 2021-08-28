@@ -1,0 +1,41 @@
+abstract class Action {
+    + operation1(): void
+    + operation2(): void
+}
+
+class Success extends Action {
+    + operation1(): void
+    + operation2(): void
+}
+
+class Fail extends Action {
+    + operation1(): void
+    + operation2(): void
+}
+
+abstract class Person {
+    + accept(action Action): void
+}
+
+Person ..> Action
+
+class Man extends Person {
+    + accept(action Action): void
+}
+
+class Woman extends Person {
+    + accept(action Action): void
+}
+
+class ObjectStructure {
+    - elements: Person
+}
+
+ObjectStructure o-- Person
+
+class Client {
+
+}
+
+Client ..> Action
+Client ..> ObjectStructure

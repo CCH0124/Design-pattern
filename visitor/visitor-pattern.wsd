@@ -1,0 +1,31 @@
+class Visitor {
+    + operation1(): void
+    + operation2(): void
+}
+
+class ConcreteVisitor extends  Visitor {
+    + operation1(): void
+    + operation2(): void
+}
+
+class Element {
+    + accept(visitor Visitor): void
+}
+
+class ConcreteElement extends Element {
+    + accept(visitor Visitor): void
+}
+
+class ObjectStruture {
+    - element: Element
+}
+
+
+class Client {
+
+}
+
+Element --o ObjectStruture
+Client ..> Visitor
+Client ..> ObjectStruture
+Element ..> Visitor
