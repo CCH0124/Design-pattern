@@ -627,3 +627,21 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
 - 違反依賴反轉原則。訪問者依賴的是具體元素，而不是抽象元素
 
 >如果一個系統有比較穩定的數據結構，又有經常變化的功能需求，那麼訪問者就是比較合適的
+
+## 迭代器模式（Iterator Pattern）
+- 屬於行為模式
+- 提供一種遍歷集合元素的統一接口，用一致的方法遍歷集合員元素，不暴露其內部的結構
+
+[類圖](iterator/Iterator-Pattern.wsd)
+
+- Iterator
+    - 迭代器接口，系統提供
+- ConcreateIterator
+    - 具體的迭代器類，管理迭代
+- Aggregate
+    - 一個統一的聚合接口，將客戶端和具體聚合解偶
+- ConcreateAggregate
+    - 具體的聚合持有對象集合，並提供一個方法，返回一個迭代器
+- Client
+    - 透過 Iterator、Aggregate 依賴子類
+
