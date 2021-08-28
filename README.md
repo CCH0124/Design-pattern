@@ -645,3 +645,6 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
 - Client
     - 透過 Iterator、Aggregate 依賴子類
 
+[範例](iterator)
+
+>每個聚合對象都要一個迭代器，會生成多個迭代器類會導致管理遍複雜
