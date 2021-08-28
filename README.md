@@ -648,3 +648,8 @@ Target（dst, 最後需要的輸出） <- Adapter <- source（src, 被適配者�
 [範例](iterator)
 
 >每個聚合對象都要一個迭代器，會生成多個迭代器類會導致管理遍複雜
+
+## 觀察者模式（Observer Pattern）
+- 對象之間**多對一**依賴的一種設計方案，被依賴的對象為*Subject*，依賴的對象為*Observer*，Subject 通知 Observer 變化。
+
+[範例](observer)
