@@ -1,0 +1,44 @@
+abstract class Mediator {
+
+}
+
+
+class ConcreteMediator extends Mediator {
+    - colleagueMap: HashMap
+    + getMessage(): void
+}
+
+abstract class Colleague {
+    + sendMessage(): void
+    + getMediator(): Mediator
+}
+
+class TV extends Colleague{
+
+}
+
+class Alarm extends Colleague{
+ 
+}
+
+class CoffeeMachine extends Colleague{
+
+}
+
+class Curtains extends Colleague{
+
+}
+
+Mediator --- Colleague
+Colleague --o ConcreteMediator
+TV ..> Mediator
+Alarm ..> Mediator
+CoffeeMachine ..> Mediator
+Curtains ..> Mediator
+
+class Client {
+
+}
+
+Client ..> Mediator
+Client ..> Colleague
