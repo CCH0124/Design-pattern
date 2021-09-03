@@ -1,0 +1,23 @@
+class Context {
+
+}
+
+abstract AbstractEpression {
+
+}
+
+class TerminalExpression extends AbstractEpression {
+
+}
+
+class NonTerminalExpression extends AbstractEpression {
+    
+}
+
+class Client {
+
+}
+
+Client ..> Context
+Client ..> AbstractEpression
+AbstractEpression --o TerminalExpression
