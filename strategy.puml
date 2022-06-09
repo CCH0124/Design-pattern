@@ -1,0 +1,55 @@
+@startuml
+class strategy.MallardDuck {
+~ void display()
+}
+interface strategy.FlyBehavior {
+~ void fly()
+}
+class strategy.impl.Squeak {
++ void quack()
+}
+class strategy.impl.Quack {
++ void quack()
+}
+class strategy.impl.FlyWithWings {
++ void fly()
+}
+class strategy.ModelDuck {
+~ void display()
+}
+interface strategy.QuackBehavior {
+~ void quack()
+}
+abstract class strategy.Duck {
+~ FlyBehavior flyBehavior
+~ QuackBehavior quackBehavior
+~ {abstract}void display()
++ void swim()
++ void setFlyBehavior(FlyBehavior)
++ void setQuackBehavior(QuackBehavior)
++ void performFly()
++ void performQuack()
+}
+class strategy.impl.MuteQuack {
++ void quack()
+}
+class strategy.impl.FlyNoWay {
++ void fly()
+}
+class strategy.impl.FlyRocketPowered {
++ void fly()
+}
+class strategy.MiniDuckSimulatorMain {
++ {static} void main(String[])
+}
+
+
+strategy.Duck <|-- strategy.MallardDuck
+strategy.QuackBehavior <|.. strategy.impl.Squeak
+strategy.QuackBehavior <|.. strategy.impl.Quack
+strategy.FlyBehavior <|.. strategy.impl.FlyWithWings
+strategy.Duck <|-- strategy.ModelDuck
+strategy.QuackBehavior <|.. strategy.impl.MuteQuack
+strategy.FlyBehavior <|.. strategy.impl.FlyNoWay
+strategy.FlyBehavior <|.. strategy.impl.FlyRocketPowered
+@enduml
