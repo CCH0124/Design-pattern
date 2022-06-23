@@ -1,0 +1,50 @@
+@startuml
+class observer.impl.WeatherData {
+- List<Observer> observers
+- float temperature
+- float humidity
+- float pressure
++ void registerObserver(Observer)
++ void removeObserver(Observer)
++ void notifyObservers()
++ void measurementsChanged()
++ void setMeasurements(float,float,float)
+}
+interface observer.DisplayElement {
+~ void display()
+}
+interface observer.Observer {
+~ void update(float,float,float)
+}
+class observer.impl.CurrentConditionsDisplay {
+- float temperature
+- float humidity
+- WeatherData weatherData
++ void display()
++ void update(float,float,float)
+}
+class observer.impl.StatisticsDisplay {
+- float maxTemp
+- float minTemp
+- float tempSum
+- int numReadings
+- WeatherData weatherData
++ void display()
++ void update(float,float,float)
+}
+class observer.WeatherStation {
++ {static} void main(String[])
+}
+interface observer.Subject {
++ void registerObserver(Observer)
++ void removeObserver(Observer)
++ void notifyObservers()
+}
+
+
+observer.Subject <|.. observer.impl.WeatherData
+observer.Observer <|.. observer.impl.CurrentConditionsDisplay
+observer.DisplayElement <|.. observer.impl.CurrentConditionsDisplay
+observer.Observer <|.. observer.impl.StatisticsDisplay
+observer.DisplayElement <|.. observer.impl.StatisticsDisplay
+@enduml
