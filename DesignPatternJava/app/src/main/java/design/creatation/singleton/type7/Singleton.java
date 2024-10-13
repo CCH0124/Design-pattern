@@ -1,18 +1,6 @@
-package singleton.type7;
-public class SingletonTest01{
-    public static void main(String[] args) {
-        Singleton a = Singleton.getInstance();
-        Singleton b = Singleton.getInstance();
-        System.out.println(a == b); 
-        System.out.println(a.hashCode());
-        System.out.println(b.hashCode());
-    }
-}
+package design.creatation.singleton.type7;
 
-/**
- * static variable method
- */
-class Singleton {
+public class Singleton {
     private Singleton() {
 
     }
