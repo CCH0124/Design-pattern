@@ -1,0 +1,35 @@
+@startuml prototype
+
+
+interface Prototype {
+    + Clone()
+}
+
+
+
+class Client {
+
+}
+
+
+
+class ConcretePrototype1 {
+    + Clone()
+}
+
+
+
+class ConcretePrototype2 {
+    + Clone()
+}
+
+note right of Prototype : Defines a standard interface for creating a copy (clone) of the object. \nEnsures that any class implementing this interface can be cloned.
+note top of Client : The client interacts with the system by using existing prototype objects. \nInstead of creating new objects from scratch, the client asks prototypes to clone themselves to create new instances.
+note top of ConcretePrototype1 : A concrete class that implements the Prototype interface. \nProvides a specific implementation of the Clone operation. \nThis class defines the actual copying mechanism that will be used when it is cloned. 
+note top of ConcretePrototype2 : Another concrete class that implements the Prototype interface. \nLike ConcretePrototype1, this class provides its own implementation of the Clone operation. \nIt allows instances of this class to be copied using the cloning mechanism. 
+
+Client --> Prototype
+ConcretePrototype1 --|> Prototype
+ConcretePrototype2 --|> Prototype
+
+@enduml
