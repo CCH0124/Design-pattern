@@ -1,0 +1,41 @@
+@startuml SimpleFactory
+abstract class PizzaAbstract {
+    + void prepare()
+    + void bake()
+    + void cut()
+    + void box()
+}
+
+class CheessPizza extends PizzaAbstract {
+
+}
+class ClamPizza extends PizzaAbstract {
+    
+}
+class VeggiePizza extends PizzaAbstract {
+    
+}
+
+class SimplePizzaFactory {
+    + PizzaAbstract createPizza() 
+}
+
+class PizzaStore {
+    + PizzaAbstract orderPizza() 
+}
+class PizzaShopMenu {
+    
+}
+
+note right of PizzaAbstract : 產品披薩\n 定義成一個抽象類別，裡面會定義可實作或覆寫的行為
+note left of SimplePizzaFactory : 建立披薩的工廠，在應用程式裡，應當只有它可以引用具體的 PizzaAbstract 類別
+note top of PizzaStore: 工廠的用戶端。\n 透過 SimplePizzaFactory 取的披薩的實例
+note bottom of CheessPizza: 具體產品。\n 每個產品都要實作 PizzaAbstract 介面。只要符合這些情況，它就可以被工廠做出來，並且送回給客戶端
+
+
+
+PizzaStore --> SimplePizzaFactory
+PizzaShopMenu --> SimplePizzaFactory
+SimplePizzaFactory --> PizzaAbstract
+
+@enduml
