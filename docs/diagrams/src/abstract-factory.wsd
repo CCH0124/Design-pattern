@@ -1,0 +1,60 @@
+@startuml AbstractFactory
+
+interface AbstractProductA {
+
+}
+
+class ProductA1 implements AbstractProductA {
+
+}
+
+
+class ProductA2 implements AbstractProductA {
+
+}
+
+interface AbstractProductB {
+
+}
+
+class ProductB1 implements AbstractProductB {
+    
+}
+
+
+class ProductB2 implements AbstractProductB {
+
+}
+
+interface AbstractFactory {
+    + createProductA()
+    + createProductB()
+}
+
+class ConcreteFactory1 implements AbstractFactory {
+
+}
+
+class ConcreteFactory2 implements AbstractFactory {
+    
+}
+
+class Client {
+
+}
+
+Client --> AbstractFactory
+Client --> AbstractProductA
+Client --> AbstractProductB
+ConcreteFactory1 --> ProductB1
+ConcreteFactory1 --> ProductA1
+
+ConcreteFactory2 --> ProductB2
+ConcreteFactory2 --> ProductA2
+
+note top of Client: 針對抽象工廠撰寫，執行期與實際的工廠結合
+note left of AbstractProductA: 產品家族。每個具體工廠都可以生產一組的產品
+note right of AbstractProductB: 產品家族。每個具體工廠都可以生產一組的產品
+note right of AbstractFactory: 抽象工廠定義了具體工廠都必須實作的介面，這介面有一個生產產品的方法
+note bottom of ConcreteFactory1: 具體工廠要實作各種不同的產品家族。\n為了建立產品，用戶端會使用其中的一個工廠，所以它絕對不需要實例化產品物件。
+@enduml

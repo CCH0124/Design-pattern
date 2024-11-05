@@ -1,0 +1,27 @@
+@startuml FactoryMethod
+
+abstract class Creator {
+    factoryMethod(): Product
+    anOperation()
+}
+
+class ConcreteCreator extends Creator {
+    factoryMethod(): Product
+}
+
+interface Product {
+
+}
+
+class ConcreteProduct {
+    
+}
+
+note top of Creator: 是一個類別。裡面有操作產品(product) 的所有方法實作，但不包含工廠方法\n factoryMethod 都必須被子類別實作
+note right of ConcreteCreator: 實作 factoryMethod()，其是實際產生產品的方法
+note right of ConcreteProduct: 負責建立一或多個具體類別。它是唯一知道如何建立這些產品的類別
+note bottom of Product : 所有產品必須實作同一個介面，這樣才可讓使用產品的類別引用介面，而非引用具體類別
+
+ConcreteProduct --|> Product
+ConcreteCreator --> ConcreteProduct
+@enduml
