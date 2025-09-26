@@ -1,0 +1,16 @@
+package design.decorator.beverages.impl;
+
+import design.decorator.beverages.Beverage;
+
+public class Decaf extends Beverage {
+
+    public Decaf() {
+        description = "Decaf Coffee";
+    }
+
+    @Override
+    public double cost() {
+        return 1.05;
+    }
+    
+}
