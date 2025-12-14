@@ -5,57 +5,60 @@
 ### 1. 核心概念：從餐廳點餐的譬喻開始
 
 書中用了一個非常生動的餐廳譬喻來解釋命令模式的組成角色：
-*   **顧客 (Client)**：顧客決定要點什麼餐。在模式中，Client 負責建立一個具體的命令物件。
-*   **女服務生 (Invoker)**：女服務生接收訂單，但她不需要知道訂單內容是什麼或廚師是誰。她只知道要把訂單送到櫃檯，然後喊一聲「出餐！」。在模式中，Invoker 持有命令物件，並在需要時觸發它。遙控器就是一個典型的 Invoker。
-*   **訂單 (Command)**：訂單本身封裝了顧客的請求（例如一份漢堡和一杯奶昔）。訂單上有一個 `orderUp()` 方法，這個方法包含了準備這份餐點所需的所有指令。在模式中，Command 物件封裝了請求，並提供一個統一的 `execute()` 介面。
-*   **廚師 (Receiver)**：廚師是真正知道如何做菜的人。他根據訂單上的指示來準備餐點。在模式中，Receiver 是實際執行動作的物件，例如燈具、音響等設備。
+
+* **顧客 (Client)**：顧客決定要點什麼餐。在模式中，Client 負責建立一個具體的命令物件。
+* **女服務生 (Invoker)**：女服務生接收訂單，但她不需要知道訂單內容是什麼或廚師是誰。她只知道要把訂單送到櫃檯，然後喊一聲「出餐！」。在模式中，Invoker 持有命令物件，並在需要時觸發它。遙控器就是一個典型的 Invoker。
+* **訂單 (Command)**：訂單本身封裝了顧客的請求（例如一份漢堡和一杯奶昔）。訂單上有一個 `orderUp()` 方法，這個方法包含了準備這份餐點所需的所有指令。在模式中，Command 物件封裝了請求，並提供一個統一的 `execute()` 介面。
+* **廚師 (Receiver)**：廚師是真正知道如何做菜的人。他根據訂單上的指示來準備餐點。在模式中，Receiver 是實際執行動作的物件，例如燈具、音響等設備。
 
 這個譬喻完美地展示了**解耦**的威力：女服務生 (Invoker) 和廚師 (Receiver) 之間沒有直接的耦合關係，他們之間的溝通完全是透過訂單 (Command) 這個中介物件。
 
 ### 2. 命令模式的結構與參與者
 
 命令模式的經典結構包含以下幾個關鍵角色：
-*   **Command 介面**：定義所有命令物件都必須實作的介面，通常只有一個 `execute()` 方法。書中後來為了支援復原功能，又加入了 `undo()` 方法。
-*   **ConcreteCommand (具體命令)**：實作 Command 介面。它會持有一個 Receiver 物件的參考，並在 `execute()` 方法中呼叫 Receiver 的一個或多個動作。它將「接收者」和「動作」綁定在一起。
-*   **Client (客戶端)**：負責建立 ConcreteCommand 物件，並設定它的 Receiver。
-*   **Invoker (呼叫者)**：持有一個 Command 物件，並在需要時呼叫其 `execute()` 方法來發出請求。Invoker 完全不知道 Receiver 的存在。書中的範例是**家庭自動化遙控器** (`RemoteControl`)。
-*   **Receiver (接收者)**：知道如何執行與請求相關的具體操作。任何類別都可以作為 Receiver。書中的範例是各種廠商提供的設備類別，如 `Light`、`Stereo` 等。
+
+* **Command 介面**：定義所有命令物件都必須實作的介面，通常只有一個 `execute()` 方法。書中後來為了支援復原功能，又加入了 `undo()` 方法。
+* **ConcreteCommand (具體命令)**：實作 Command 介面。它會持有一個 Receiver 物件的參考，並在 `execute()` 方法中呼叫 Receiver 的一個或多個動作。它將「接收者」和「動作」綁定在一起。
+* **Client (客戶端)**：負責建立 ConcreteCommand 物件，並設定它的 Receiver。
+* **Invoker (呼叫者)**：持有一個 Command 物件，並在需要時呼叫其 `execute()` 方法來發出請求。Invoker 完全不知道 Receiver 的存在。書中的範例是**家庭自動化遙控器** (`RemoteControl`)。
+* **Receiver (接收者)**：知道如何執行與請求相關的具體操作。任何類別都可以作為 Receiver。書中的範例是各種廠商提供的設備類別，如 `Light`、`Stereo` 等。
 
 ### 3. 實際應用：家庭自動化遙控器
 
 本章的主要範例是設計一個可程式化的遙控器 API。問題在於，遙控器需要控制來自不同廠商、擁有完全不同介面的設備（例如 `Light` 有 `on()`/`off()`，`CeilingFan` 有 `high()`/`medium()`/`low()`）。
 
 命令模式的解決方案如下：
-1.  **解耦**：遙控器 (`RemoteControl`，即 Invoker) 的每個插槽 (slot) 不直接參考設備物件，而是持有一個 Command 物件。
-2.  **封裝請求**：為每個設備的每個動作建立一個 ConcreteCommand 類別。例如，`LightOnCommand` 會持有一個 `Light` 物件 (Receiver)，其 `execute()` 方法會呼叫 `light.on()`。`StereoOnWithCDCommand` 則可能在 `execute()` 中呼叫 `stereo.on()`、`stereo.setCD()` 和 `stereo.setVolume(11)` 等多個方法。
-3.  **彈性設定**：Client 程式碼可以建立各種 Command 物件（例如，一個綁定客廳燈的 `LightOnCommand`，一個綁定廚房燈的 `LightOnCommand`），然後將這些命令物件載入遙控器的插槽中。遙控器本身完全不需要知道它控制的是什麼設備，它只知道當按鈕被按下時，就呼叫對應 Command 物件的 `execute()` 方法。
+
+1. **解耦**：遙控器 (`RemoteControl`，即 Invoker) 的每個插槽 (slot) 不直接參考設備物件，而是持有一個 Command 物件。
+2. **封裝請求**：為每個設備的每個動作建立一個 ConcreteCommand 類別。例如，`LightOnCommand` 會持有一個 `Light` 物件 (Receiver)，其 `execute()` 方法會呼叫 `light.on()`。`StereoOnWithCDCommand` 則可能在 `execute()` 中呼叫 `stereo.on()`、`stereo.setCD()` 和 `stereo.setVolume(11)` 等多個方法。
+3. **彈性設定**：Client 程式碼可以建立各種 Command 物件（例如，一個綁定客廳燈的 `LightOnCommand`，一個綁定廚房燈的 `LightOnCommand`），然後將這些命令物件載入遙控器的插槽中。遙控器本身完全不需要知道它控制的是什麼設備，它只知道當按鈕被按下時，就呼叫對應 Command 物件的 `execute()` 方法。
 
 ### 4. 命令模式的進階應用
 
 書中還探討了命令模式的幾項強大擴充功能：
 
-*   **復原 (Undo) 功能**：
-    *   在 Command 介面中增加一個 `undo()` 方法。
-    *   ConcreteCommand 在執行 `execute()` 時，必須先儲存 Receiver 在執行動作前的狀態。例如，`CeilingFanHighCommand` 在執行前會先用一個實例變數 `prevSpeed` 記下風扇目前的速度。
-    *   `undo()` 方法則使用儲存的狀態將 Receiver 還原。例如，`ceilingFan.high()` 的 `undo()` 就是根據 `prevSpeed` 的值來呼叫 `ceilingFan.medium()`、`low()` 或 `off()`。
-    *   Invoker (遙控器) 需要一個額外的變數來追蹤「最後一個被執行的命令」，當 undo 按鈕被按下時，就呼叫該命令的 `undo()` 方法。
+* **復原 (Undo) 功能**：
+  * 在 Command 介面中增加一個 `undo()` 方法。
+  * ConcreteCommand 在執行 `execute()` 時，必須先儲存 Receiver 在執行動作前的狀態。例如，`CeilingFanHighCommand` 在執行前會先用一個實例變數 `prevSpeed` 記下風扇目前的速度。
+  * `undo()` 方法則使用儲存的狀態將 Receiver 還原。例如，`ceilingFan.high()` 的 `undo()` 就是根據 `prevSpeed` 的值來呼叫 `ceilingFan.medium()`、`low()` 或 `off()`。
+  * Invoker (遙控器) 需要一個額外的變數來追蹤「最後一個被執行的命令」，當 undo 按鈕被按下時，就呼叫該命令的 `undo()` 方法。
 
-*   **宏命令 (Macro Command)**：
-    *   這是一種複合模式的應用，一個宏命令可以持有一個命令陣列。
-    *   當宏命令的 `execute()` 被呼叫時，它會依序執行陣列中所有命令的 `execute()` 方法。
-    *   這讓你可以用一個按鈕觸發一連串的動作，例如「派對模式」可以同時開燈、開音響、開電視和加熱水浴缸。
-    *   宏命令的 `undo()` 同樣是依序（通常是反序）呼叫內部所有命令的 `undo()` 方法。
+* **宏命令 (Macro Command)**：
+  * 這是一種複合模式的應用，一個宏命令可以持有一個命令陣列。
+  * 當宏命令的 `execute()` 被呼叫時，它會依序執行陣列中所有命令的 `execute()` 方法。
+  * 這讓你可以用一個按鈕觸發一連串的動作，例如「派對模式」可以同時開燈、開音響、開電視和加熱水浴缸。
+  * 宏命令的 `undo()` 同樣是依序（通常是反序）呼叫內部所有命令的 `undo()` 方法。
 
-*   **佇列請求 (Queuing Requests)**：
-    *   由於命令是物件，它們可以被存放在佇列中，等待被處理。
-    *   這在執行緒池 (thread pool) 或工作佇列 (job queue) 的場景中非常有用。工作執行緒可以不斷從佇列中取出命令物件並執行它，而不需要知道命令的具體內容。
+* **佇列請求 (Queuing Requests)**：
+  * 由於命令是物件，它們可以被存放在佇列中，等待被處理。
+  * 這在執行緒池 (thread pool) 或工作佇列 (job queue) 的場景中非常有用。工作執行緒可以不斷從佇列中取出命令物件並執行它，而不需要知道命令的具體內容。
 
-*   **日誌請求 (Logging Requests)**：
-    *   命令物件可以被序列化並儲存到磁碟中。當系統崩潰後，可以重新載入這些命令物件並依序執行，以恢復到崩潰前的狀態。
+* **日誌請求 (Logging Requests)**：
+  * 命令物件可以被序列化並儲存到磁碟中。當系統崩潰後，可以重新載入這些命令物件並依序執行，以恢復到崩潰前的狀態。
 
 ### 5. 其他重點
 
-*   **空物件 (Null Object)**：這是一個實用的技巧。為了避免在 Invoker 中進行大量的 `if (command != null)` 檢查，可以建立一個 `NoCommand` 物件，它的 `execute()` 方法是空的。在初始化時，將所有插槽都填入這個空物件，這樣可以確保每個插槽都有一個有效的命令可以呼叫。
-*   **Lambda 運算式**：在現代 Java 中，如果 Command 介面是函數式介面（只有一個抽象方法，如 `execute()`），則可以用 Lambda 運算式來取代簡單的 ConcreteCommand 類別，大幅簡化程式碼。
+* **空物件 (Null Object)**：這是一個實用的技巧。為了避免在 Invoker 中進行大量的 `if (command != null)` 檢查，可以建立一個 `NoCommand` 物件，它的 `execute()` 方法是空的。在初始化時，將所有插槽都填入這個空物件，這樣可以確保每個插槽都有一個有效的命令可以呼叫。
+* **Lambda 運算式**：在現代 Java 中，如果 Command 介面是函數式介面（只有一個抽象方法，如 `execute()`），則可以用 Lambda 運算式來取代簡單的 ConcreteCommand 類別，大幅簡化程式碼。
 
 總結來說，命令模式是一個非常靈活的行為模式，它將「行為的請求」從「行為的實作」中分離出來，使得請求可以像一般物件一樣被傳遞、儲存和操作，從而實現了高度的解耦和彈性。

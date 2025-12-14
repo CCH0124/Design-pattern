@@ -5,7 +5,7 @@
  * For more detailed information on multi-project builds, please refer to https://docs.gradle.org/8.14.2/userguide/multi_project_builds.html in the Gradle documentation.
  */
 
-rootProject.name = 'design-pattern'
+rootProject.name = 'designpattern'
 include('strategy')
 project(':strategy').projectDir = file('behavioral/strategy')
 include('observer')
@@ -18,3 +18,7 @@ include('singleton')
 project(':singleton').projectDir = file('creatation/singleton')
 include('command')
 project(':command').projectDir = file('behavioral/command')
+include('adapter')
+project(':adapter').projectDir = file('structural/adapter')
+include('facade')
+project(':facade').projectDir = file('structural/facade')
