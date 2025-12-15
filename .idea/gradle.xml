@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/behavioral/command" />
             <option value="$PROJECT_DIR$/behavioral/observer" />
             <option value="$PROJECT_DIR$/behavioral/strategy" />
+            <option value="$PROJECT_DIR$/behavioral/template" />
             <option value="$PROJECT_DIR$/creatation/factory" />
             <option value="$PROJECT_DIR$/creatation/singleton" />
             <option value="$PROJECT_DIR$/structural/adapter" />
