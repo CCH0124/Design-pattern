@@ -10,12 +10,14 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/behavioral/command" />
+            <option value="$PROJECT_DIR$/behavioral/iterator" />
             <option value="$PROJECT_DIR$/behavioral/observer" />
             <option value="$PROJECT_DIR$/behavioral/strategy" />
             <option value="$PROJECT_DIR$/behavioral/template" />
             <option value="$PROJECT_DIR$/creatation/factory" />
             <option value="$PROJECT_DIR$/creatation/singleton" />
             <option value="$PROJECT_DIR$/structural/adapter" />
+            <option value="$PROJECT_DIR$/structural/composite" />
             <option value="$PROJECT_DIR$/structural/decorator" />
             <option value="$PROJECT_DIR$/structural/facade" />
           </set>
