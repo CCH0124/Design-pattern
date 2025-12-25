@@ -1,0 +1,54 @@
+interface Iterator {
+    + hasNext(): boolean
+    + next(): E
+    + remove(): void
+}
+
+class ComputerCollegeIterator implements Iterator {
+
+}
+
+class InfoCollegeIterator implements Iterator {
+    
+}
+
+class Department {
+
+}
+
+
+ComputerCollegeIterator o-- Department
+InfoCollegeIterator o-- Department
+
+interface College {
+    + createIterator(): Iterator
+}
+
+class ComputerCollege implements College{
+
+}
+
+ComputerCollege ..> ComputerCollegeIterator
+
+class InfoCollege implements College {
+    
+}
+
+InfoCollege ..> InfoCollegeIterator
+
+ComputerCollege o-- Department
+InfoCollege o-- Department
+
+' note 完成對所有學院輸出
+class OutpuImpl {
+
+}
+
+OutpuImpl o-- College
+
+class Client {
+
+}
+
+Client ..> OutpuImpl
+Client ..> Iterator

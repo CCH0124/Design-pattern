@@ -1,0 +1,27 @@
+note top of Iterator
+interface Iterator {
+    + hasNext(): boolean
+    + next(): E
+    + remove(): void
+}
+
+class ConcreteIterator implements Iterator {
+     
+}
+
+interface Aggregate {
+    + createIterator(): Iterator
+}
+
+class ConcreteAggregate implements Aggregate {
+    + createIterator(): Iterator
+    - elements: ArrayList
+}
+
+class Client {
+
+}
+ConcreteAggregate ..> ConcreteIterator
+
+Client ..> Iterator
+Client ..> Aggregate
