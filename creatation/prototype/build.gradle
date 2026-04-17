@@ -34,13 +34,14 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'design.proxy.App'
+    mainClass = 'design.singleton.App'
 }
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

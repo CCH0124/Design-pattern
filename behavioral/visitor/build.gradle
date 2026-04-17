@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'design.proxy.App'
+    mainClass = 'design.template.App'
 }
 
 tasks.named('test') {

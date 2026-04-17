@@ -9,18 +9,28 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/behavioral/chainofresponsibility" />
             <option value="$PROJECT_DIR$/behavioral/command" />
+            <option value="$PROJECT_DIR$/behavioral/interpreter" />
             <option value="$PROJECT_DIR$/behavioral/iterator" />
+            <option value="$PROJECT_DIR$/behavioral/mediator" />
+            <option value="$PROJECT_DIR$/behavioral/memento" />
             <option value="$PROJECT_DIR$/behavioral/observer" />
             <option value="$PROJECT_DIR$/behavioral/state" />
             <option value="$PROJECT_DIR$/behavioral/strategy" />
             <option value="$PROJECT_DIR$/behavioral/template" />
+            <option value="$PROJECT_DIR$/behavioral/visitor" />
+            <option value="$PROJECT_DIR$/creatation/builder" />
             <option value="$PROJECT_DIR$/creatation/factory" />
+            <option value="$PROJECT_DIR$/creatation/prototype" />
             <option value="$PROJECT_DIR$/creatation/singleton" />
             <option value="$PROJECT_DIR$/structural/adapter" />
+            <option value="$PROJECT_DIR$/structural/bridge" />
             <option value="$PROJECT_DIR$/structural/composite" />
             <option value="$PROJECT_DIR$/structural/decorator" />
             <option value="$PROJECT_DIR$/structural/facade" />
+            <option value="$PROJECT_DIR$/structural/flyweight" />
+            <option value="$PROJECT_DIR$/structural/proxy" />
           </set>
         </option>
       </GradleProjectSettings>
