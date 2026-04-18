@@ -1,0 +1,101 @@
+@startuml
+title 策略模式 (Strategy Pattern) - 鴨子模擬系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam class {
+BackgroundColor White
+ArrowColor #2688d4
+BorderColor #2688d4
+}
+
+' --- 策略介面與實作 (飛行行為) ---
+package "飛行策略 (Fly Strategy)" {
+interface FlyBehavior {
++ {abstract} fly(): void
+}
+
+class FlyWithWingsImpl implements FlyBehavior {
+    + fly(): void // 實現揮動翅膀飛行
+}
+
+class FlyNoWayImpl implements FlyBehavior {
+    + fly(): void // 什麼都不做 (不會飛)
+}
+
+class FlyRocketPoweredImpl implements FlyBehavior {
+    + fly(): void // 透過火箭動力飛行
+}
+
+
+}
+
+' --- 策略介面與實作 (叫聲行為) ---
+package "叫聲策略 (Quack Strategy)" {
+interface QuackBehavior {
++ {abstract} quack(): void
+}
+
+class QuackImpl implements QuackBehavior {
+    + quack(): void // 嘎嘎叫
+}
+
+class SqueakImpl implements QuackBehavior {
+    + quack(): void // 吱吱叫 (橡皮鴨)
+}
+
+class MuteQuackImpl implements QuackBehavior {
+    + quack(): void // 靜音
+}
+
+class FakeQuackImpl implements QuackBehavior {
+    + quack(): void // 模擬叫聲
+}
+
+
+}
+
+' --- 環境類別 (Context) ---
+abstract class Duck {
+# flyBehavior : FlyBehavior
+# quackBehavior : QuackBehavior
+
++ {abstract} display(): void
++ performFly(): void
++ performQuack(): void
++ swim(): void
++ setFlyBehavior(fb: FlyBehavior): void
++ setQuackBehavior(qb: QuackBehavior): void
+
+
+}
+
+' --- 關聯關係 (Composition) ---
+Duck o--> FlyBehavior : 委託飛行行為
+Duck o--> QuackBehavior : 委託叫聲行為
+
+' --- 具體鴨子類別 ---
+class MallardDuck extends Duck {
++ display(): void // 呈現綠頭鴨外觀
+}
+
+class RedHeadDuck extends Duck {
++ display(): void // 呈現紅頭鴨外觀
+}
+
+class RubberDuck extends Duck {
++ display(): void // 呈現橡皮鴨外觀
+}
+
+class DecoyDuck extends Duck {
++ display(): void // 呈現誘餌鴨外觀
+}
+
+class ModelDuck extends Duck {
++ display(): void // 呈現模型鴨外觀
+}
+
+note top of Duck : 策略模式的核心：\n將行為封裝成物件，\n並透過組合而非繼承來動態切換。
+
+@enduml

@@ -1,0 +1,89 @@
+@startuml
+title 裝飾模式 (Decorator Pattern) - 星巴克咖啡系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #2ecc71
+BorderColor #27ae60
+}
+
+' --- 核心組件 (Component) ---
+abstract class Beverage {
+# description: String = "Unknown Beverage"
++ getDescription(): String
++ {abstract} cost(): double
+}
+
+' --- 裝飾者基類 (Decorator) ---
+abstract class CondimentDecorator extends Beverage {
+# beverage: Beverage
++ {abstract} getDescription(): String
+}
+
+' --- 具體組件 (Concrete Components) ---
+package "咖啡基底 (Coffee Bases)" {
+class Espresso extends Beverage {
++ Espresso()
++ cost(): double
+}
+
+class HouseBlend extends Beverage {
+    + HouseBlend()
+    + cost(): double
+}
+
+class DarkRoast extends Beverage {
+    + DarkRoast()
+    + cost(): double
+}
+
+class Decaf extends Beverage {
+    + Decaf()
+    + cost(): double
+}
+
+
+}
+
+' --- 具體裝飾者 (Concrete Decorators) ---
+package "調味品裝飾 (Condiments)" {
+class Mocha extends CondimentDecorator {
++ Mocha(beverage: Beverage)
++ getDescription(): String
++ cost(): double
+}
+
+class Milk extends CondimentDecorator {
+    + Milk(beverage: Beverage)
+    + getDescription(): String
+    + cost(): double
+}
+
+class Soy extends CondimentDecorator {
+    + Soy(beverage: Beverage)
+    + getDescription(): String
+    + cost(): double
+}
+
+class Whip extends CondimentDecorator {
+    + Whip(beverage: Beverage)
+    + getDescription(): String
+    + cost(): double
+}
+
+
+}
+
+' --- 關係連線 ---
+CondimentDecorator o-- Beverage : 組合 (包裹一個 Beverage 物件)
+
+note top of Beverage : 抽象組件：\n定義了咖啡的描述與計算金額的介面。
+note bottom of CondimentDecorator : 裝飾者基類：\n必須與被裝飾物件屬於同一類型，\n且持有一個該類型的引用。
+note right of Mocha : 具體裝飾者：\n在原有 cost() 之上疊加自己的價格，\n並在 getDescription() 附加說明。
+
+@enduml

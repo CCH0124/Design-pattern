@@ -1,0 +1,40 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' 產品介面
+interface Product <<interface>> {
+  + operation()
+}
+
+' 具體產品
+class ConcreteProduct {
+  + operation()
+}
+
+' 建立者抽象類別
+abstract class Creator {
+  + anOperation()
+  {abstract} + factoryMethod(): Product
+}
+
+' 具體建立者
+class ConcreteCreator {
+  + factoryMethod(): Product
+}
+
+' 關係
+ConcreteProduct .up.|> Product : 實作
+ConcreteCreator -up-|> Creator : 繼承
+ConcreteCreator .right.> ConcreteProduct : " 建立實例"
+
+note right of Creator::anOperation
+  // 業務邏輯會使用工廠方法取得產品
+  Product p = factoryMethod();
+  p.operation();
+end note
+
+note right of ConcreteCreator::factoryMethod
+  return new ConcreteProduct();
+end note
+
+@enduml

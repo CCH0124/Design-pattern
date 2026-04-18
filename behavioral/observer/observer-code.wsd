@@ -1,0 +1,95 @@
+@startuml
+title 觀察者模式 (Observer Pattern) - 氣象監測系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #e67e22
+BorderColor #d35400
+}
+
+' --- 介面定義 ---
+package "核心介面 (Core Interfaces)" {
+interface Subject {
++ {abstract} registerObserver(o: Observer): void
++ {abstract} removeObserver(o: Observer): void
++ {abstract} notifyObservers(): void
+}
+
+interface Observer {
+    + {abstract} update(temp: float, humidity: float, pressure: float): void
+}
+
+interface DisplayElement {
+    + {abstract} display(): void
+}
+
+
+}
+
+' --- 具體主題 (Concrete Subject) ---
+class WeatherDataImpl implements Subject {
+- observers: List<Observer>
+- temperature: float
+- humidity: float
+- pressure: float
+
++ registerObserver(o: Observer): void
++ removeObserver(o: Observer): void
++ notifyObservers(): void
++ measurementsChanged(): void
++ setMeasurements(t: float, h: float, p: float): void
+
+
+}
+
+' --- 具體觀察者 (Concrete Observers) ---
+package "顯示面板 (Display Panels)" {
+class CurrentConditionsDisplayImpl implements Observer, DisplayElement {
+- temperature: float
+- humidity: float
+- weatherData: Subject
++ update(t, h, p): void
++ display(): void
+}
+
+class StatisticsDisplayImpl implements Observer, DisplayElement {
+    - maxTemp: float
+    - minTemp: float
+    - tempSum: float
+    - numReadings: int
+    + update(t, h, p): void
+    + display(): void
+}
+
+class ForecastDisplayImpl implements Observer, DisplayElement {
+    - currentPressure: float
+    - lastPressure: float
+    + update(t, h, p): void
+    + display(): void
+}
+
+class HeatIndexDisplayImpl implements Observer, DisplayElement {
+    - heatIndex: float
+    + update(t, h, p): void
+    + display(): void
+}
+
+
+}
+
+' --- 關係連線 ---
+WeatherDataImpl o--> Observer : 管理觀察者清單
+CurrentConditionsDisplayImpl --> Subject : 訂閱數據
+StatisticsDisplayImpl --> Subject : 訂閱數據
+ForecastDisplayImpl --> Subject : 訂閱數據
+HeatIndexDisplayImpl --> Subject : 訂閱數據
+
+note right of Subject : 主題 (Subject) 負責\n維護觀察者清單並通知變更。
+note bottom of Observer : 觀察者 (Observer) 實作 update 介面\n以接收來自主題的數據更新。
+
+@enduml

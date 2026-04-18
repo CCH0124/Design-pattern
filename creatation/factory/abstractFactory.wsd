@@ -1,0 +1,51 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' 抽象工廠
+interface AbstractFactory <<interface>> {
+  + createProductA(): AbstractProductA
+  + createProductB(): AbstractProductB
+}
+
+' 具體工廠 1 (例如：Windows 家族)
+class ConcreteFactory1 {
+  + createProductA(): AbstractProductA
+  + createProductB(): AbstractProductB
+}
+
+' 具體工廠 2 (例如：Mac 家族)
+class ConcreteFactory2 {
+  + createProductA(): AbstractProductA
+  + createProductB(): AbstractProductB
+}
+
+' 產品家族 A
+interface AbstractProductA <<interface>>
+class ProductA1 implements AbstractProductA
+class ProductA2 implements AbstractProductA
+
+' 產品家族 B
+interface AbstractProductB <<interface>>
+class ProductB1 implements AbstractProductB
+class ProductB2 implements AbstractProductB
+
+' 客戶端
+class Client {
+  - factory: AbstractFactory
+}
+
+' 關係連線
+Client -right-> AbstractFactory : 使用
+Client -down-> AbstractProductA : 依賴
+Client -down-> AbstractProductB : 依賴
+
+ConcreteFactory1 .up.|> AbstractFactory
+ConcreteFactory2 .up.|> AbstractFactory
+
+ConcreteFactory1 ..> ProductA1 : 建立
+ConcreteFactory1 ..> ProductB1 : 建立
+
+ConcreteFactory2 ..> ProductA2 : 建立
+ConcreteFactory2 ..> ProductB2 : 建立
+
+@enduml

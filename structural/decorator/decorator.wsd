@@ -1,0 +1,57 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' 定義最頂層的元件介面
+interface Component <<interface>> {
+  + operation()
+}
+
+' 具體的核心元件，也就是準備被裝飾的主體
+class ConcreteComponent {
+  + operation()
+}
+
+' 裝飾者的抽象基礎類別，它必須實作 Component 介面，同時內部也持有一個 Component
+abstract class Decorator {
+  # component: Component
+  + Decorator(c: Component)
+  + operation()
+}
+
+' 具體的裝飾者 A，在委派前後加入自己的狀態或行為
+class ConcreteDecoratorA {
+  - addedState
+  + operation()
+}
+
+' 具體的裝飾者 B，加入額外的方法或行為
+class ConcreteDecoratorB {
+  + operation()
+  + addedBehavior()
+}
+
+' 建立關聯線
+Component <|.. ConcreteComponent : 實作
+Component <|.. Decorator : 實作
+
+' 裝飾者透過合成 (Composition) 持有 Component 的參考
+Decorator o--> Component : "   component"
+
+Decorator <|-- ConcreteDecoratorA : 繼承
+Decorator <|-- ConcreteDecoratorB : 繼承
+
+note left of Decorator
+  **Decorator::operation()** 內部實作:
+  ""component.operation()""
+  (將請求委派給內部的元件)
+end note
+
+note bottom of ConcreteDecoratorB
+  **ConcreteDecoratorB::operation()** 內部實作:
+  ""super.operation()""
+  ""addedBehavior()""
+  (在委派前後加上自己的行為)
+end note
+
+@enduml

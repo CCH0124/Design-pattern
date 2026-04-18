@@ -1,0 +1,28 @@
+@startuml
+skinparam maxMessageSize 150
+
+participant "Client\n(外部系統/使用者)" as Client
+participant "Subject\n(主題物件)" as Subject
+participant "Observer A\n(觀察者 A)" as ObsA
+participant "Observer B\n(觀察者 B)" as ObsB
+
+note over Subject: 維護一個 Observer 列表
+
+ObsA -> Subject : registerObserver(ObsA)\n向主題註冊
+ObsB -> Subject : registerObserver(ObsB)\n向主題註冊
+
+Client -> Subject : 改變內部資料/狀態
+activate Subject
+Subject -> Subject : notifyObservers()\n觸發通知機制
+activate Subject
+
+Subject -> ObsA : update()\n通知 A 狀態已改變
+Subject -> ObsB : update()\n通知 B 狀態已改變
+
+deactivate Subject
+deactivate Subject
+
+note over ObsA, ObsB: 觀察者取得最新狀態，\n進行後續處理 (如更新畫面、寫入 Log)
+
+ObsA -> Subject : removeObserver(ObsA)\n取消註冊
+@enduml

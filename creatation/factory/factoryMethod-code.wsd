@@ -1,0 +1,75 @@
+@startuml
+title 工廠方法模式 (Factory Method Pattern) - 披薩店系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #3498db
+BorderColor #2980b9
+}
+
+' --- 產品階層 (Product) ---
+package "披薩產品 (Products)" {
+abstract class Pizza {
+# name: String
+# dough: String
+# sauce: String
+# veggies: List<String>
++ {abstract} prepare(): void
++ bake(): void
++ cut(): void
++ box(): void
++ getName(): String
+}
+
+package "紐約風味" {
+    class NYStyleCheesePizza extends Pizza
+    class NYStyleClamPizza extends Pizza
+    class NYStyleVeggiePizza extends Pizza
+}
+
+package "芝加哥風味" {
+    class ChicagoStyleCheesePizza extends Pizza
+    class ChicagoStyleClamPizza extends Pizza
+    class ChicagoStyleVeggiePizza extends Pizza
+}
+
+
+}
+
+' --- 建立者階層 (Creator) ---
+package "商店建立者 (Creators)" {
+abstract class PizzaStore {
++ orderPizza(type: String): Pizza
+# {abstract} createPizza(type: String): Pizza
+}
+
+class NYPizzaStore extends PizzaStore {
+    # createPizza(type: String): Pizza
+}
+
+class ChicagoPizzaStore extends PizzaStore {
+    # createPizza(type: String): Pizza
+}
+
+
+}
+
+' --- 關係連線 (Dependencies) ---
+NYPizzaStore ..> NYStyleCheesePizza : 建立
+NYPizzaStore ..> NYStyleClamPizza : 建立
+NYPizzaStore ..> NYStyleVeggiePizza : 建立
+
+ChicagoPizzaStore ..> ChicagoStyleCheesePizza : 建立
+ChicagoPizzaStore ..> ChicagoStyleClamPizza : 建立
+ChicagoPizzaStore ..> ChicagoStyleVeggiePizza : 建立
+
+note left of PizzaStore : orderPizza() 呼叫 createPizza()\n來取得披薩物件，而不需要知道\n具體實例化的是哪一個類別。
+
+note right of NYPizzaStore : 具體工廠：實作抽象方法\n並回傳紐約風格的披薩。
+
+@enduml

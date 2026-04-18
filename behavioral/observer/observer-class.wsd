@@ -1,0 +1,38 @@
+@startuml
+skinparam maxMessageSize 150
+skinparam classAttributeIconSize 0
+
+' 定義介面
+interface Subject <<interface>> {
+  + registerObserver(o: Observer)
+  + removeObserver(o: Observer)
+  + notifyObservers()
+}
+
+interface Observer <<interface>> {
+  + update()
+}
+
+' 定義實作類別
+class ConcreteSubject {
+  - observers: List<Observer>
+  - subjectState
+  + registerObserver(o: Observer)
+  + removeObserver(o: Observer)
+  + notifyObservers()
+  + getState()
+  + setState()
+}
+
+class ConcreteObserver {
+  - subject: ConcreteSubject
+  - observerState
+  + update()
+}
+
+' 關係定義
+Subject "1" -> "*" Observer : 包含/通知 >
+ConcreteSubject .up.|> Subject : 實作
+ConcreteObserver .up.|> Observer : 實作
+ConcreteObserver -left-> ConcreteSubject : 觀察的主題
+@enduml

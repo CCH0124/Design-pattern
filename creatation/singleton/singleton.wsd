@@ -1,0 +1,25 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+class Singleton {
+  - static uniqueInstance: Singleton
+  - singletonData: Object
+  
+  - Singleton()
+  + static getInstance(): Singleton
+  + getSingletonData(): Object
+}
+
+note right of Singleton::getInstance
+  if (uniqueInstance == null) {
+    uniqueInstance = new Singleton();
+  }
+  return uniqueInstance;
+end note
+
+note left of Singleton::Singleton
+  Constructor is private!
+  Clients cannot use 'new'.
+end note
+@enduml
