@@ -1,41 +1,72 @@
-abstract class Action {
-    + operation1(): void
-    + operation2(): void
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define the Visitor interface
+abstract class Visitor {
+  + VisitConcreteElementA(ConcreteElementA)
+  + VisitConcreteElementB(ConcreteElementB)
 }
 
-class Success extends Action {
-    + operation1(): void
-    + operation2(): void
+' Define Concrete Visitors
+class ConcreteVisitor1 {
+  + VisitConcreteElementA(ConcreteElementA)
+  + VisitConcreteElementB(ConcreteElementB)
 }
 
-class Fail extends Action {
-    + operation1(): void
-    + operation2(): void
+class ConcreteVisitor2 {
+  + VisitConcreteElementA(ConcreteElementA)
+  + VisitConcreteElementB(ConcreteElementB)
 }
 
-abstract class Person {
-    + accept(action Action): void
-}
-
-Person ..> Action
-
-class Man extends Person {
-    + accept(action Action): void
-}
-
-class Woman extends Person {
-    + accept(action Action): void
-}
-
+' Define the Object Structure and Element Interface
 class ObjectStructure {
-    - elements: Person
 }
 
-ObjectStructure o-- Person
+abstract class Element {
+  + Accept(Visitor)
+}
+
+' Define Concrete Elements
+class ConcreteElementA {
+  + Accept(Visitor v)
+  + OperationA()
+}
+
+class ConcreteElementB {
+  + Accept(Visitor v)
+  + OperationB()
+}
 
 class Client {
-
 }
 
-Client ..> Action
-Client ..> ObjectStructure
+' Relationships
+Client -right-> Visitor : " creates >"
+Client -down-> ObjectStructure : " traverses >"
+ObjectStructure -right-> "*" Element : " maintains >"
+
+Visitor <|-- ConcreteVisitor1 : " implements"
+Visitor <|-- ConcreteVisitor2 : " implements"
+
+Element <|-- ConcreteElementA : " implements"
+Element <|-- ConcreteElementB : " implements"
+
+' Double Dispatch Interactions
+ConcreteElementA .right.> Visitor : " dispatches to >"
+ConcreteElementB .up.> Visitor : " dispatches to >"
+
+' Notes for Logic Explanation
+note bottom of ConcreteElementA
+  **Accept(Visitor v)**
+  ""v->VisitConcreteElementA(this);""
+  (Passes itself back to the visitor)
+end note
+
+note bottom of ConcreteVisitor1
+  **VisitConcreteElementA(ConcreteElementA e)**
+  Executes specific algorithm for Element A.
+  State is accumulated in the Visitor.
+end note
+
+@enduml

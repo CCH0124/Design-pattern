@@ -1,0 +1,82 @@
+@startuml
+title 訪問者模式 (Visitor Pattern) - 歌手評分系統分析
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #2980b9
+BorderColor #3498db
+}
+
+' --- 訪問者介面 (Visitor) ---
+abstract class Action {
++ {abstract} getManResult(man: Man): void
++ {abstract} getWomanResult(woman: Woman): void
+}
+
+' --- 具體訪問者 (Concrete Visitors) ---
+package "評審行為 (Visitors)" {
+class Success extends Action {
++ getManResult(man: Man): void
++ getWomanResult(woman: Woman): void
+}
+
+class Fail extends Action {
+    + getManResult(man: Man): void
+    + getWomanResult(woman: Woman): void
+}
+
+
+}
+
+' --- 元素介面 (Element) ---
+abstract class Person {
++ {abstract} accept(action: Action): void
+}
+
+' --- 具體元素 (Concrete Elements) ---
+package "參賽者類型 (Elements)" {
+class Man extends Person {
++ accept(action: Action): void
+}
+
+class Woman extends Person {
+    + accept(action: Action): void
+}
+
+
+}
+
+' --- 物件結構 (Object Structure) ---
+class ObjectStructure {
+- elements: List
++ add(p: Person): void
++ remove(p: Person): void
++ display(action: Action): void
+}
+
+' --- 關係連線 ---
+' 雙重分派的關鍵：Element 接受 Visitor
+Person ..> Action : 依賴 (接收訪問者)
+
+' Visitor 處理具體的 Element
+Action ..> Man : 依賴 (處理男性)
+Action ..> Woman : 依賴 (處理女性)
+
+' 物件結構管理元素
+ObjectStructure o-- Person : 聚合管理
+
+' --- 說明註解 ---
+note top of Action : 訪問者 (Visitor)：\n定義了對每一種元素類別\n所對應的操作介面。
+
+note top of Person : 元素 (Element)：\n定義了 accept 操作，\n將訪問者物件作為參數傳入。
+
+note right of Man : 雙重分派核心：\n在 accept 方法中執行：\naction.getManResult(this);
+
+note bottom of ObjectStructure : 物件結構：\n能列舉它的元素，可以提供一個\n高層介面以允許訪問者訪問它的元素。
+
+@enduml

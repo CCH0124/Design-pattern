@@ -227,5 +227,5 @@ Method 表示 權限 名稱(參數列表) [: 返回類型]
 * [v] Interpreter Pattern
 * [v] Mediator Pattern
 * [v] Memento Pattern
-* [] Prototype Pattern
-* [] Visitor Pattern
+* [v] Prototype Pattern
+* [v] Visitor Pattern
