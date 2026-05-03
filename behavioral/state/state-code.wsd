@@ -1,0 +1,124 @@
+@startuml
+title 狀態模式 (State Pattern) - 糖果機系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #27ae60
+BorderColor #2ecc71
+}
+
+' --- 狀態介面 (State) ---
+interface State {
++ {abstract} insertQuarter(): void
++ {abstract} ejectQuarter(): void
++ {abstract} turnCrank(): void
++ {abstract} dispense(): void
+}
+
+' --- 具體狀態實作 (Concrete States) ---
+package "狀態實作 (Concrete States)" {
+class NoQuarterState implements State {
+- gumballMachine: GumballMachine
++ NoQuarterState(gumballMachine)
++ insertQuarter(): void
++ ejectQuarter(): void
++ turnCrank(): void
++ dispense(): void
+}
+
+class HasQuarterState implements State {
+    - gumballMachine: GumballMachine
+    - randomWinner: Random
+    + HasQuarterState(gumballMachine)
+    + insertQuarter(): void
+    + ejectQuarter(): void
+    + turnCrank(): void
+    + dispense(): void
+}
+
+class SoldState implements State {
+    - gumballMachine: GumballMachine
+    + SoldState(gumballMachine)
+    + insertQuarter(): void
+    + ejectQuarter(): void
+    + turnCrank(): void
+    + dispense(): void
+}
+
+class SoldOutState implements State {
+    - gumballMachine: GumballMachine
+    + SoldOutState(gumballMachine)
+    + insertQuarter(): void
+    + ejectQuarter(): void
+    + turnCrank(): void
+    + dispense(): void
+}
+
+class WinnerState implements State {
+    - gumballMachine: GumballMachine
+    + WinnerState(gumballMachine)
+    + insertQuarter(): void
+    + ejectQuarter(): void
+    + turnCrank(): void
+    + dispense(): void
+}
+
+
+}
+
+' --- 環境類別 (Context) ---
+class GumballMachine {
+- soldOutState: State
+- noQuarterState: State
+- hasQuarterState: State
+- soldState: State
+- winnerState: State
+- state: State
+- count: int = 0
+
++ GumballMachine(numberGumballs: int)
++ insertQuarter(): void
++ ejectQuarter(): void
++ turnCrank(): void
++ setState(state: State): void
++ releaseBall(): void
++ getCount(): int
+' ... 其他 Getter 方法
+
+
+}
+
+' --- 關係連線 ---
+GumballMachine o-- State : 持有當前狀態 (Composition)
+NoQuarterState --> GumballMachine : 持有 Context 引用
+HasQuarterState --> GumballMachine
+SoldState --> GumballMachine
+SoldOutState --> GumballMachine
+WinnerState --> GumballMachine
+
+' --- 說明註解 ---
+note right of State
+狀態介面：
+定義了與 Context 中
+特定狀態相關的行為。
+end note
+
+note top of GumballMachine
+環境類別 (Context)：
+客戶端與此類別互動。
+內部維護了所有可能的狀態實例，
+並委託當前狀態物件處理請求。
+end note
+
+note bottom of WinnerState
+具體狀態：
+每個類別實現了在該狀態下
+應有的行為邏輯。
+end note
+
+@enduml

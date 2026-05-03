@@ -1,0 +1,49 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Component: Defines the uniform interface
+interface Component <<interface>> {
+  + operation()
+  + add(c: Component)
+  + remove(c: Component)
+  + getChild(index: int): Component
+}
+
+' Leaf: Represents individual objects with no children
+class Leaf {
+  + operation()
+}
+
+' Composite: Represents containers that hold other components
+class Composite {
+  - children: List<Component>
+  + operation()
+  + add(c: Component)
+  + remove(c: Component)
+  + getChild(index: int): Component
+}
+
+' Client: Interacts with the Component interface
+class Client {
+}
+
+' Relationships
+Client -right-> Component : " manipulates >"
+Component <|.. Leaf : " implements"
+Component <|.. Composite : " implements"
+Composite o--> "many" Component : " contains >"
+
+' Notes for operational logic
+note bottom of Composite
+  **operation()** implementation:
+  ""for each child in children {""
+  ""  child.operation();""
+  ""}""
+end note
+
+note bottom of Leaf
+  A leaf has no children.
+  Implements **operation()** directly.
+end note
+@enduml

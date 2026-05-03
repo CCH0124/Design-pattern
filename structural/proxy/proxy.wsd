@@ -1,16 +1,57 @@
-class TargetObject {
-    + void operation1()
-    + void operation2()
-}
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
 
-class ProxyObject {
-
-}
-
+' 1. Define the Client
 class Client {
-
 }
 
+' 2. Define the Subject interface
+interface Subject <<interface>> {
+  + request()
+}
 
-Client ..> ProxyObject
-ProxyObject ..> TargetObject
+' 3. Define the RealSubject (The object doing the actual work)
+class RealSubject {
+  + request()
+}
+
+' 4. Define the Proxy 
+class Proxy {
+  - realSubject: RealSubject
+  + request()
+}
+
+' Relationships
+Client -right-> Subject : " Uses >"
+Subject <|.. RealSubject : " Implements"
+Subject <|.. Proxy : " Implements"
+
+' The Proxy holds a reference to the RealSubject via Composition
+Proxy o-right-> RealSubject : " Maintains reference to >"
+
+' Notes for Logic Explanation
+note top of Subject
+  **Subject**
+  Defines the common interface for 
+  both RealSubject and Proxy.
+end note
+
+note bottom of Proxy
+  **Proxy::request()** internal implementation:
+  
+  ""if (realSubject == null) {""
+  ""    // Lazy initialization (Virtual Proxy)""
+  ""    realSubject = new RealSubject();""
+  ""}""
+  ""// Perform access control, networking, etc.""
+  ""realSubject.request();""
+end note
+
+note bottom of RealSubject
+  **RealSubject**
+  The real object that the proxy 
+  represents and controls access to.
+end note
+
+@enduml

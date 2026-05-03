@@ -1,0 +1,49 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define the Client
+class Client {
+}
+
+' Define the Handler interface
+abstract class Handler {
+  - successor: Handler
+  + SetSuccessor(s: Handler)
+  + HandleRequest(request: Request)
+}
+
+' Define Concrete Handlers
+class ConcreteHandler1 {
+  + HandleRequest(request: Request)
+}
+
+class ConcreteHandler2 {
+  + HandleRequest(request: Request)
+}
+
+' Relationships
+Client -right-> Handler : " Initiates request >"
+Handler o-right-> Handler : " successor link >"
+Handler <|-- ConcreteHandler1 : " Implements"
+Handler <|-- ConcreteHandler2 : " Implements"
+
+' Notes for logic explanation
+note top of Handler
+  **Handler**
+  Defines an interface for handling requests.
+  Maintains a reference to the next handler 
+  in the chain (the successor).
+end note
+
+note bottom of ConcreteHandler1
+  **ConcreteHandler1::HandleRequest()**
+  
+  ""if (canHandle(request)) {""
+  ""    // Fulfill the request""
+  ""} else if (successor != null) {""
+  ""    // Pass to the next handler""
+  ""    successor.HandleRequest(request);""
+  ""}""
+end note
+@enduml

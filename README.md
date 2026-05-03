@@ -200,32 +200,32 @@ Method 表示 權限 名稱(參數列表) [: 返回類型]
 * 多執行續模式
   * 在很多應用中都會使用多執行緒，尤其是在Web應用中，多執行緒以 Gof 整理的模式為基礎，考量多執行緒環境中，如何組合這些基本模式來完成多執行緒安全要求。
 
-## compound patterns
+* ## compound patterns
 
 定義： 複合模式並不是把一堆設計模式隨便拼湊在一起，而是結合兩個或多個模式，來解決一個常見的、一般性的問題。也就是說，它必須是一個經過時間考驗、能解決特定場景問題的「綜合解決方案」。
 
 不要為了用模式而用模式： 設計系統時，我們不該一開始就說「我要用一個複合模式」。正如鴨子模擬器的例子，設計模式應該是為了解決隨著需求增加而出現的耦合、管理或擴充問題，而自然而然被引入的。永遠以最簡單、符合 OO 原則的解法為優先 。
 
-[v] Strategy Pattern
-[v] Observer Pattern
-[v] Decorator Pattern
-[v] Factory Pattern
-[v] Singleton Pattern
-[] Command Pattern
-[] Adapter Pattern
-[] Facade Pattern
-[] Template Method Pattern
-[] Iterator Pattern
-[] Composite Pattern
-[] State Pattern
-[] Proxy Pattern
-[] compound Pattern
-[] Bridge Pattern
-[] Builder Pattern
-[] Chain of Responsibility Pattern
-[] Flyweight Pattern
-[] Interpreter Pattern
-[] Mediator Pattern
-[] Memento Pattern
-[] Prototype Pattern
-[] Visitor Pattern
+* [v] Strategy Pattern
+* [v] Observer Pattern
+* [v] Decorator Pattern
+* [v] Factory Pattern
+* [v] Singleton Pattern
+* [v] Command Pattern
+* [v] Adapter Pattern
+* [v] Facade Pattern
+* [v] Template Method Pattern
+* [v] Iterator Pattern
+* [v] Composite Pattern
+* [v] State Pattern
+* [v] Proxy Pattern
+* [v] compound Pattern
+* [v] Bridge Pattern
+* [v] Builder Pattern
+* [v] Chain of Responsibility Pattern
+* [v] Flyweight Pattern
+* [v] Interpreter Pattern
+* [v] Mediator Pattern
+* [v] Memento Pattern
+* [] Prototype Pattern
+* [] Visitor Pattern

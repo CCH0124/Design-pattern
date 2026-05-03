@@ -1,32 +1,48 @@
-interface Brand {
-    + void call()
-}
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
 
-class Vivo implements Brand {
-
-}
-
-class XiaoMi implements Brand {
-
-}
-
-abstract Phone {
-    - Brand brand
-}
-
-class FoldedPhone extends Phone {
-
-}
-
-class UpRightPhone extends Phone {
-
-}
-
+' Define the Client
 class Client {
-
 }
 
-Phone o-- Brand
+' The Abstraction defines the abstraction's interface
+class Abstraction {
+  - imp: Implementor
+  + Operation()
+}
 
-Client ..> Phone
-Client ..> Brand
+' RefinedAbstraction extends the interface
+class RefinedAbstraction {
+  + OtherOperation()
+}
+
+' Implementor defines the interface for implementation classes
+interface Implementor <<interface>> {
+  + OperationImp()
+}
+
+' ConcreteImplementors implement the Implementor interface
+class ConcreteImplementorA {
+  + OperationImp()
+}
+
+class ConcreteImplementorB {
+  + OperationImp()
+}
+
+' Relationships
+Client -right-> Abstraction : " Uses >"
+Abstraction o-right-> Implementor : " Maintains a reference to \n (The Bridge)"
+Abstraction <|-- RefinedAbstraction : " Extends"
+Implementor <|.. ConcreteImplementorA : " Implements"
+Implementor <|.. ConcreteImplementorB : " Implements"
+
+' Note explaining the forwarding/delegation
+note bottom of Abstraction
+  **Abstraction::Operation()**
+  Implementation delegates the request:
+  ""imp->OperationImp();""
+end note
+
+@enduml

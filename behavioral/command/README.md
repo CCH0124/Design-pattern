@@ -1,64 +1,62 @@
-這一章的核心概念非常強大：**將「請求」本身封裝成一個物件**。這麼做的好處是什麼？它讓我們可以將發出請求的物件 (invoker) 與知道如何執行請求的物件 (receiver) 徹底解耦。
+# 命令模式 (Command Pattern)
 
-想像一下，你不再是直接呼叫某個物件的方法，而是建立一個代表「請求」的命令物件，然後把這個命令物件交給別人。這個「別人」不需要知道這個命令到底要做什麼、由誰來做，它只需要在適當的時機呼叫這個命令物件的 `execute()` 方法就行了。這種設計帶來了極大的彈性，讓我們可以做到參數化請求、將請求排入佇列、記錄請求日誌，甚至是實作可復原的操作 (undo)。
+在建構高併發系統、非同步任務處理（Task Queues）或是分散式交易系統時，我們經常需要將「發出請求的系統元件」與「實際執行請求的底層服務」徹底解耦。
 
-### 1. 核心概念：從餐廳點餐的譬喻開始
+為了解決這類問題，**命令模式 (Command Pattern)** 便是我們最常使用的經典底層架構。它能將動作抽象化，讓系統變得極度靈活。
 
-書中用了一個非常生動的餐廳譬喻來解釋命令模式的組成角色：
+1. 什麼是命令模式
 
-* **顧客 (Client)**：顧客決定要點什麼餐。在模式中，Client 負責建立一個具體的命令物件。
-* **女服務生 (Invoker)**：女服務生接收訂單，但她不需要知道訂單內容是什麼或廚師是誰。她只知道要把訂單送到櫃檯，然後喊一聲「出餐！」。在模式中，Invoker 持有命令物件，並在需要時觸發它。遙控器就是一個典型的 Invoker。
-* **訂單 (Command)**：訂單本身封裝了顧客的請求（例如一份漢堡和一杯奶昔）。訂單上有一個 `orderUp()` 方法，這個方法包含了準備這份餐點所需的所有指令。在模式中，Command 物件封裝了請求，並提供一個統一的 `execute()` 介面。
-* **廚師 (Receiver)**：廚師是真正知道如何做菜的人。他根據訂單上的指示來準備餐點。在模式中，Receiver 是實際執行動作的物件，例如燈具、音響等設備。
+    **核心定義：** 將一個請求（Request）封裝成一個物件，從而讓你能夠使用不同的請求對客戶端進行參數化、將請求放入佇列或記錄日誌，並且支援可復原（Undoable）的操作。
 
-這個譬喻完美地展示了**解耦**的威力：女服務生 (Invoker) 和廚師 (Receiver) 之間沒有直接的耦合關係，他們之間的溝通完全是透過訂單 (Command) 這個中介物件。
+    **生活化的比喻（餐廳點餐）：**
+      想像你身處在一家餐廳，這就是命令模式最完美的縮影：
+      1. **客戶 (Client)：** 決定點什麼菜，並建立一張「訂單 (Command)」。
+      2. **服務生 (Invoker)：** 接過訂單，將它夾在出菜口，大喊「上菜！」。她不需要知道這道菜怎麼做，只需要知道這張訂單可以被「執行」。
+      3. **廚師 (Receiver)：** 收到訂單後，依照訂單內容準備餐點。廚師負責真正執行的邏輯。
 
-### 2. 命令模式的結構與參與者
+    透過訂單 (Command)，服務生與廚師被完美解耦了！
 
-命令模式的經典結構包含以下幾個關鍵角色：
+2. 命令模式背後的核心設計原則
 
-* **Command 介面**：定義所有命令物件都必須實作的介面，通常只有一個 `execute()` 方法。書中後來為了支援復原功能，又加入了 `undo()` 方法。
-* **ConcreteCommand (具體命令)**：實作 Command 介面。它會持有一個 Receiver 物件的參考，並在 `execute()` 方法中呼叫 Receiver 的一個或多個動作。它將「接收者」和「動作」綁定在一起。
-* **Client (客戶端)**：負責建立 ConcreteCommand 物件，並設定它的 Receiver。
-* **Invoker (呼叫者)**：持有一個 Command 物件，並在需要時呼叫其 `execute()` 方法來發出請求。Invoker 完全不知道 Receiver 的存在。書中的範例是**家庭自動化遙控器** (`RemoteControl`)。
-* **Receiver (接收者)**：知道如何執行與請求相關的具體操作。任何類別都可以作為 Receiver。書中的範例是各種廠商提供的設備類別，如 `Light`、`Stereo` 等。
+    命令模式之所以在系統工程中如此強大，是因為它深度契合了以下幾個物件導向與系統設計原則：
 
-### 3. 實際應用：家庭自動化遙控器
+    1. **封裝方法呼叫 (Encapsulate Method Invocation)：**
+        一般來說，我們是找出系統中*會變動的部分*並將其封裝。在命令模式中，我們封裝的是*請求（動作）*本身。它將請求轉化為第一級物件 (First-class objects)，讓你可以像傳遞普通變數一樣，傳遞、儲存或丟棄這些運算邏輯。
 
-本章的主要範例是設計一個可程式化的遙控器 API。問題在於，遙控器需要控制來自不同廠商、擁有完全不同介面的設備（例如 `Light` 有 `on()`/`off()`，`CeilingFan` 有 `high()`/`medium()`/`low()`）。
+    2. **發出者與接收者解耦 (Decouple Sender and Receiver)：**
+        體現了*致力於讓互動的物件之間保持鬆耦合*的原則。呼叫者 (Invoker) 只需要知道呼叫 Command 的 `execute()` 方法，完全不需要知道底層實作細節，也不用認識真正負責處理的接收者 (Receiver) 是誰。
 
-命令模式的解決方案如下：
+    3. **對擴展開放，對修改封閉 (Open-Closed Principle, OCP)：**
+        當系統需要增加新的命令（例如新增一個 API 或任務類型）時，我們只需要新增一個實作了 `Command` 介面的類別即可。完全不需要修改現有的呼叫者 (Invoker) 或基礎架構程式碼。
 
-1. **解耦**：遙控器 (`RemoteControl`，即 Invoker) 的每個插槽 (slot) 不直接參考設備物件，而是持有一個 Command 物件。
-2. **封裝請求**：為每個設備的每個動作建立一個 ConcreteCommand 類別。例如，`LightOnCommand` 會持有一個 `Light` 物件 (Receiver)，其 `execute()` 方法會呼叫 `light.on()`。`StereoOnWithCDCommand` 則可能在 `execute()` 中呼叫 `stereo.on()`、`stereo.setCD()` 和 `stereo.setVolume(11)` 等多個方法。
-3. **彈性設定**：Client 程式碼可以建立各種 Command 物件（例如，一個綁定客廳燈的 `LightOnCommand`，一個綁定廚房燈的 `LightOnCommand`），然後將這些命令物件載入遙控器的插槽中。遙控器本身完全不需要知道它控制的是什麼設備，它只知道當按鈕被按下時，就呼叫對應 Command 物件的 `execute()` 方法。
+3. 命令模式類別圖 (Class Diagram)
 
-### 4. 命令模式的進階應用
+      ![command pattern](../../docs/diagrams/out/__WorkspaceFolder__/behavioral/command/command-pattern/command-pattern.png)
 
-書中還探討了命令模式的幾項強大擴充功能：
+      **角色拆解：**
+      * **Command (命令介面)：** 所有命令的共通介面，通常包含一個 `execute()` 方法，有時也會支援復原機制的 `undo()`。
+      * **ConcreteCommand (具體命令)：** 封裝了特定的 `Receiver` 與一組動作。當 `execute()` 被呼叫時，它會去觸發 Receiver 身上對應的方法。
+      * **Invoker (呼叫者)：** 持有 Command 物件，負責在適當的時機要求 Command 執行請求。
+      * **Receiver (接收者)：** 真正知道如何執行該請求並完成工作底層元件。
 
-* **復原 (Undo) 功能**：
-  * 在 Command 介面中增加一個 `undo()` 方法。
-  * ConcreteCommand 在執行 `execute()` 時，必須先儲存 Receiver 在執行動作前的狀態。例如，`CeilingFanHighCommand` 在執行前會先用一個實例變數 `prevSpeed` 記下風扇目前的速度。
-  * `undo()` 方法則使用儲存的狀態將 Receiver 還原。例如，`ceilingFan.high()` 的 `undo()` 就是根據 `prevSpeed` 的值來呼叫 `ceilingFan.medium()`、`low()` 或 `off()`。
-  * Invoker (遙控器) 需要一個額外的變數來追蹤「最後一個被執行的命令」，當 undo 按鈕被按下時，就呼叫該命令的 `undo()` 方法。
+4. 實務應用場景
 
-* **宏命令 (Macro Command)**：
-  * 這是一種複合模式的應用，一個宏命令可以持有一個命令陣列。
-  * 當宏命令的 `execute()` 被呼叫時，它會依序執行陣列中所有命令的 `execute()` 方法。
-  * 這讓你可以用一個按鈕觸發一連串的動作，例如「派對模式」可以同時開燈、開音響、開電視和加熱水浴缸。
-  * 宏命令的 `undo()` 同樣是依序（通常是反序）呼叫內部所有命令的 `undo()` 方法。
+    在大型系統架構中，命令模式是解決併發與容錯問題的利器：
 
-* **佇列請求 (Queuing Requests)**：
-  * 由於命令是物件，它們可以被存放在佇列中，等待被處理。
-  * 這在執行緒池 (thread pool) 或工作佇列 (job queue) 的場景中非常有用。工作執行緒可以不斷從佇列中取出命令物件並執行它，而不需要知道命令的具體內容。
+    * **工作佇列與執行緒池 (Job Queues & Thread Pools)：**
+        我們將每一個耗時的非同步運算（例如影像處理、網路下載）封裝成 Command 物件並塞入 Queue 中。另一端的 Worker Threads 不斷從 Queue 取出 Command 並呼叫 `execute()`。Worker Thread 完全不需要知道它正在處理什麼任務，達成了高度的任務排程解耦。
+    * **系統交易日誌與災難復原 (Logging & Disaster Recovery)：**
+        在分散式系統或資料庫中，為了防止 Crash，我們可以為 Command 加上 `store()` 與 `load()` 方法。在執行前將 Command 序列化並寫入硬碟（類似 Write-Ahead Logging）。若伺服器當機，重啟時只要將日誌中的 Command 重新讀取出來並依序執行 `execute()`，就能完美還原系統狀態。
+    * **強大的復原與重做機制 (Undo / Redo)：**
+        實作 `undo()` 方法，並將所有執行過的 Command 存入一個堆疊 (History Stack)。當使用者要求復原時，只需從 Stack 彈出最後一個 Command 並呼叫 `undo()` 來反轉操作，這在文字編輯器或大型設定變更管理 (Configuration Management) 中極為常見。
 
-* **日誌請求 (Logging Requests)**：
-  * 命令物件可以被序列化並儲存到磁碟中。當系統崩潰後，可以重新載入這些命令物件並依序執行，以恢復到崩潰前的狀態。
+5. 其他重點
 
-### 5. 其他重點
+    * **空物件 (Null Object)**：這是一個實用的技巧。為了避免在 Invoker 中進行大量的 `if (command != null)` 檢查，可以建立一個 `NoCommand` 物件，它的 `execute()` 方法是空的。在初始化時，將所有插槽都填入這個空物件，這樣可以確保每個插槽都有一個有效的命令可以呼叫。
+    * **Lambda 運算式**：在現代 Java 中，如果 Command 介面是函數式介面（只有一個抽象方法，如 `execute()`），則可以用 Lambda 運算式來取代簡單的 ConcreteCommand 類別，大幅簡化程式碼。
 
-* **空物件 (Null Object)**：這是一個實用的技巧。為了避免在 Invoker 中進行大量的 `if (command != null)` 檢查，可以建立一個 `NoCommand` 物件，它的 `execute()` 方法是空的。在初始化時，將所有插槽都填入這個空物件，這樣可以確保每個插槽都有一個有效的命令可以呼叫。
-* **Lambda 運算式**：在現代 Java 中，如果 Command 介面是函數式介面（只有一個抽象方法，如 `execute()`），則可以用 Lambda 運算式來取代簡單的 ConcreteCommand 類別，大幅簡化程式碼。
+    總結來說，命令模式是一個非常靈活的行為模式，它將*行為的請求*從*行為的實作*中分離出來，使得請求可以像一般物件一樣被傳遞、儲存和操作，從而實現了高度的解耦和彈性。
 
-總結來說，命令模式是一個非常靈活的行為模式，它將「行為的請求」從「行為的實作」中分離出來，使得請求可以像一般物件一樣被傳遞、儲存和操作，從而實現了高度的解耦和彈性。
+6. 範例程式碼類別圖
+
+    ![code example class diagram](../../docs/diagrams/out/__WorkspaceFolder__/behavioral/command/command-code/command-code.png)

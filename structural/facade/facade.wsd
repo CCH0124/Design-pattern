@@ -1,23 +1,61 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define the Client
+class Client {
+}
+
+' Define the Facade
 class Facade {
-
+  + watchMovie()
+  + endMovie()
 }
 
-class SubSystem1 {
-
+' Define the complex subsystem
+package "Subsystem Classes" {
+  class Amplifier {
+    + on()
+    + off()
+    + setVolume()
+  }
+  
+  class Projector {
+    + on()
+    + off()
+    + wideScreenMode()
+  }
+  
+  class TheaterLights {
+    + dim()
+    + off()
+  }
+  
+  class StreamingPlayer {
+    + on()
+    + play()
+    + stop()
+  }
 }
-class SubSystem2 {
-    
-}
-class SubSystem3 {
-    
-}
 
-class client {
+' Relationships
+Client -right-> Facade : " Invokes simplified API"
+Facade -down-> Amplifier : " Delegates"
+Facade -down-> Projector : " Delegates"
+Facade -down-> TheaterLights : " Delegates"
+Facade -down-> StreamingPlayer : " Delegates"
 
-}
+' Notes for clarity
+note top of Facade
+  **Facade**
+  Provides a unified, high-level interface.
+  Shields the Client from subsystem complexity.
+end note
 
-SubSystem1 --o Facade
-SubSystem2 --o Facade
-SubSystem3 --o Facade
+note bottom of "Subsystem Classes"
+  **Subsystem Classes**
+  Implement the actual functionality.
+  They have no knowledge of the Facade.
+end note
 
-client ..> Facade
+@enduml

@@ -1,0 +1,56 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define the Mediator interface
+interface Mediator <<interface>> {
+  + ColleagueChanged(c: Colleague)
+}
+
+' Define the Concrete Mediator
+class ConcreteMediator {
+  - colleague1: ConcreteColleague1
+  - colleague2: ConcreteColleague2
+  + ColleagueChanged(c: Colleague)
+}
+
+' Define the abstract Colleague class
+abstract class Colleague {
+  - mediator: Mediator
+  + Colleague(m: Mediator)
+  + Changed()
+}
+
+' Define Concrete Colleagues
+class ConcreteColleague1 {
+  + Action1()
+}
+
+class ConcreteColleague2 {
+  + Action2()
+}
+
+' Relationships
+Mediator <|.. ConcreteMediator : " Implements"
+Colleague <|-- ConcreteColleague1 : " Extends"
+Colleague <|-- ConcreteColleague2 : " Extends"
+
+ConcreteMediator -down-> ConcreteColleague1 : " Coordinates >"
+ConcreteMediator -down-> ConcreteColleague2 : " Coordinates >"
+Colleague -up-> Mediator : " Keeps reference to >"
+
+' Notes for logic explanation
+note left of Colleague::Changed
+  **Changed()** internal implementation:
+  ""mediator->ColleagueChanged(this);""
+  (Notifies the mediator when its state changes)
+end note
+
+note right of ConcreteMediator
+  **ColleagueChanged(c: Colleague)**
+  Encapsulates the complex interaction rules.
+  If colleague1 changes, it might invoke 
+  Action2() on colleague2, and vice versa.
+end note
+
+@enduml

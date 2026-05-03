@@ -1,0 +1,74 @@
+@startuml
+title 解釋器模式 (Interpreter Pattern) - 算術運算解析系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #2980b9
+BorderColor #3498db
+}
+
+' --- 抽象表達式 (Abstract Expression) ---
+abstract class Expression {
++ {abstract} interpret(var: HashMap<String, Integer>): int
+}
+
+' --- 終端符號表達式 (Terminal Expression) ---
+class VarExpression {
+- key: String
++ VarExpression(key: String)
++ interpret(var: HashMap<String, Integer>): int
+}
+
+' --- 非終端符號表達式基類 (Non-terminal Expression Base) ---
+abstract class SymbolExpression {
+# left: Expression
+# right: Expression
++ SymbolExpression(left: Expression, right: Expression)
+}
+
+' --- 具體非終端符號表達式 (Concrete Non-terminal Expressions) ---
+package "運算符解釋器" {
+class AddExpression {
++ AddExpression(left: Expression, right: Expression)
++ interpret(var: HashMap<String, Integer>): int
+}
+
+class SubExpression {
+    + SubExpression(left: Expression, right: Expression)
+    + interpret(var: HashMap<String, Integer>): int
+}
+
+
+}
+
+' --- 環境/上下文類別 (Context / Service) ---
+class Calculator {
+- expression: Expression
++ Calculator(expStr: String)
++ run(var: HashMap<String, Integer>): int
+}
+
+' --- 關係連線 ---
+VarExpression -up-|> Expression
+SymbolExpression -up-|> Expression
+AddExpression -up-|> SymbolExpression
+SubExpression -up-|> SymbolExpression
+
+SymbolExpression o-- Expression : 組合 (左、右子表達式)
+Calculator --> Expression : 持有語法樹根節點
+
+' --- 說明註解 ---
+note top of Expression : 抽象表達式：\n定義了所有節點的解釋操作，\n傳入 Map 作為上下文數據。
+
+note right of VarExpression : 終端節點：\n代表變數（如 a, b），\n從 Map 中提取具體數值。
+
+note bottom of SymbolExpression : 非終端節點：\n代表運算符，內部持有其他\n表達式並進行遞迴運算。
+
+note left of Calculator : 解析器 (Context)：\n負責將字串解析成表達式樹，\n並驅動 interpretation 過程。
+
+@enduml

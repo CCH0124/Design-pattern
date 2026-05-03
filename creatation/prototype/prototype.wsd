@@ -1,0 +1,41 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define the Client
+class Client {
+  - prototype: Prototype
+  + Operation()
+}
+
+' Define the Prototype interface
+interface Prototype <<interface>> {
+  + Clone()
+}
+
+' Define Concrete Prototypes
+class ConcretePrototype1 {
+  + Clone()
+}
+
+class ConcretePrototype2 {
+  + Clone()
+}
+
+' Relationships
+Client -right-> Prototype : " Asks to clone itself >"
+Prototype <|.. ConcretePrototype1 : " Implements"
+Prototype <|.. ConcretePrototype2 : " Implements"
+
+' Notes for operational logic
+note bottom of Client
+  **Client::Operation()**
+  ""p = prototype->Clone();""
+end note
+
+note bottom of ConcretePrototype1
+  **Clone()**
+  ""return copy of self;""
+end note
+
+@enduml

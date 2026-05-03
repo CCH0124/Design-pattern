@@ -1,37 +1,60 @@
-' Flyweight
-class WebSite {
-    + void use()
-}
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
 
-' ConcreteFlyweight
-class ConcreteWebSite extends WebSite {
-    + void use()
-}
-
-' FlyweightFactory
-
-class WebSiteFactory {
-    + void getWebSiteCategory()
-}
-' 外部狀態
-class User {
-
-}
-
+' Define the Client
 class Client {
-
 }
 
+' Define the FlyweightFactory
+class FlyweightFactory {
+  - flyweights: Map<Key, Flyweight>
+  + GetFlyweight(key: Key): Flyweight
+}
 
+' Define the Flyweight interface
+interface Flyweight <<interface>> {
+  + Operation(extrinsicState)
+}
 
+' Define the Concrete shared flyweight
+class ConcreteFlyweight {
+  - intrinsicState
+  + Operation(extrinsicState)
+}
 
+' Define the Unshared concrete flyweight (optional)
+class UnsharedConcreteFlyweight {
+  - allState
+  + Operation(extrinsicState)
+}
 
+' Relationships
+Client -right-> FlyweightFactory : " Requests flyweight >"
+Client --> Flyweight : " Computes & passes \n extrinsic state >"
 
+FlyweightFactory o-right-> Flyweight : " Manages pool of >"
 
-WebSiteFactory o-- WebSite
+Flyweight <|.. ConcreteFlyweight : " Implements"
+Flyweight <|.. UnsharedConcreteFlyweight : " Implements"
 
-Client ..> WebSiteFactory
-Client ..> ConcreteWebSite
+' Notes for logic explanation
+note bottom of FlyweightFactory
+  **GetFlyweight(key)** internal implementation:
+  
+  ""if (flyweights[key] exists) {""
+  ""    return existing flyweight;""
+  ""} else {""
+  ""    create new flyweight;""
+  ""    add it to flyweights pool;""
+  ""    return the new flyweight;""
+  ""}""
+end note
 
-ConcreteWebSite ..> User
-Client ..> User
+note bottom of ConcreteFlyweight
+  Stores intrinsic (shared) state.
+  The extrinsic state is passed 
+  in via the Operation() parameter.
+end note
+
+@enduml

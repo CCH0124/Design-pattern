@@ -1,0 +1,75 @@
+@startuml
+title 建造者模式 (Builder Pattern) - 房屋建造系統 (優化版)
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #d35400
+BorderColor #e67e22
+}
+
+' --- 產品類別 (Product) ---
+class Hourse {
+- baise: String
+- wall: String
+- roofed: String
++ getBaise(): String
++ setBaise(baise: String): void
++ getWall(): String
++ setWall(wall: String): void
++ getRoofed(): String
++ setRoofed(roofed: String): void
+}
+
+' --- 抽象建造者 (Abstract Builder) ---
+abstract class HourseBuilder {
+# hourse: Hourse = new Hourse()
++ {abstract} buildBasic(): void
++ {abstract} buildWalls(): void
++ {abstract} roofed(): void
++ buildHourse(): Hourse
+}
+
+' --- 具體建造者 (Concrete Builders) ---
+package "具體建造者實作" {
+class CommonHourse extends HourseBuilder {
++ buildBasic(): void
++ buildWalls(): void
++ roofed(): void
+}
+
+class HighBuilding extends HourseBuilder {
+    + buildBasic(): void
+    + buildWalls(): void
+    + roofed(): void
+}
+
+
+}
+
+' --- 指揮者 (Director) ---
+class HourseDirector {
+- hourseBuilder: HourseBuilder
++ HourseDirector(hourseBuilder: HourseBuilder)
++ setHourseDirector(hourseBuilder: HourseBuilder): void
++ constructHourse(): Hourse
+}
+
+' --- 關係連線 ---
+HourseBuilder o-- Hourse : 組合/聚合 (持有產品實例)
+HourseDirector o-- HourseBuilder : 聚合 (持有建造者引用)
+
+' --- 說明註解 ---
+note top of Hourse : 產品 (Product)：\n最終要建立的複雜物件，\n包含多個組成零件。
+
+note left of HourseBuilder : 抽象建造者：\n定義了建立產品各個零件的介面，\n並持有一個產品物件。
+
+note right of HourseDirector : 指揮者 (Director)：\n負責安排建造的順序（演算法），\n隔離了客戶端與建造過程。
+
+note bottom of HighBuilding : 具體建造者：\n實現抽象介面，\n負責具體的零件生產邏輯\n(例如：高樓層的打地基與普通房不同)。
+
+@enduml

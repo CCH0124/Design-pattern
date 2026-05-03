@@ -1,0 +1,61 @@
+@startuml
+title 中介者模式 (Mediator Pattern) - 聊天室系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #d35400
+BorderColor #e67e22
+}
+
+' --- 中介者介面 (Mediator Interface) ---
+interface ChatMediator {
++ {abstract} sendMessage(msg: String, user: User): void
++ {abstract} addUser(user: User): void
+}
+
+' --- 具體中介者 (Concrete Mediator) ---
+class ChatRoom implements ChatMediator {
+- users: List
++ ChatRoom()
++ addUser(user: User): void
++ sendMessage(msg: String, user: User): void
+}
+
+' --- 抽象同事類別 (Colleague) ---
+abstract class User {
+# mediator: ChatMediator
+# name: String
++ User(mediator: ChatMediator, name: String)
++ {abstract} send(msg: String): void
++ {abstract} receive(msg: String): void
+}
+
+' --- 具體同事類別 (Concrete Colleague) ---
+class ChatUser extends User {
++ ChatUser(mediator: ChatMediator, name: String)
++ send(msg: String): void
++ receive(msg: String): void
+}
+
+' --- 關係連線 ---
+' 中介者管理多個同事物件
+ChatRoom o-- User : 管理 (Aggregation)
+
+' 同事物件持有中介者的引用
+User --> ChatMediator : 依賴通訊 (Association)
+
+' --- 說明註解 ---
+note left of ChatMediator : 中介者介面：\n定義了同事物件之間\n進行通訊的介面。
+
+note right of ChatRoom : 具體中介者：\n協調各個同事物件的交互行為，\n它知道所有同事物件，\n並負責轉發訊息。
+
+note top of User : 同事類別：\n每個同事只知道中介者，\n而不認識其他同事。
+
+note bottom of ChatUser : 具體同事：\n透過中介者發送訊息，\n並接收來自中介者的訊息。
+
+@enduml

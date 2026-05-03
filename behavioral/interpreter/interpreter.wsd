@@ -1,33 +1,52 @@
-abstract Expression {
-    + interpreter() : void
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Defines the global information needed for interpretation
+class Context {
+  ' global state and inputs
 }
 
-class VarExpression extends Expression {
-
+' Defines the abstract interface for all expressions
+abstract class AbstractExpression {
+  + Interpret(Context)
 }
 
-class SymbolExpression extends Expression {
-    
+' Terminal expressions at the leaf nodes
+class TerminalExpression {
+  + Interpret(Context)
 }
 
-class SubExpression extends  SymbolExpression {
-
+' Nonterminal expressions that contain other expressions
+class NonterminalExpression {
+  - expressions: List<AbstractExpression>
+  + Interpret(Context)
 }
 
-class AddExpression extends  SymbolExpression {
-    
-}
-
-Expression --o SymbolExpression
-
-class Calculator {
-    
-}
-
-Expression --o Calculator
-
+' Client that builds the AST and starts the interpretation
 class Client {
-
 }
 
-Client ..> Calculator
+' Relationships
+Client -right-> Context : " initializes >"
+Client -down-> AbstractExpression : " builds AST >"
+
+AbstractExpression <|-- TerminalExpression : " implements"
+AbstractExpression <|-- NonterminalExpression : " implements"
+
+NonterminalExpression o-right-> AbstractExpression : " maintains \n child expressions >"
+
+note bottom of NonterminalExpression
+  **Interpret(Context)** implementation:
+  ""for each child in expressions {""
+  ""    child.Interpret(Context);""
+  ""}""
+end note
+
+note bottom of TerminalExpression
+  Implements interpretation
+  associated with terminal
+  symbols in the grammar.
+end note
+
+@enduml

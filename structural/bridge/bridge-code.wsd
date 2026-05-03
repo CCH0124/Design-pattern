@@ -1,0 +1,79 @@
+@startuml
+title 橋接模式 (Bridge Pattern) - 手機品牌與型號系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #34495e
+BorderColor #2c3e50
+}
+
+' ==========================================
+' 1. 實作部分 (Implementor) - 品牌維度
+' ==========================================
+package "品牌實作 (Implementors)" {
+interface Brand {
++ {abstract} open(): void
++ {abstract} close(): void
++ {abstract} call(): void
+}
+
+class XiaoMi implements Brand {
+    + open(): void
+    + close(): void
+    + call(): void
+}
+
+class Vivo implements Brand {
+    + open(): void
+    + close(): void
+    + call(): void
+}
+
+
+}
+
+' ==========================================
+' 2. 抽象部分 (Abstraction) - 手機類型維度
+' ==========================================
+package "手機抽象 (Abstractions)" {
+abstract class Phone {
+- brand: Brand
++ Phone(brand: Brand)
+# open(): void
+# close(): void
+# call(): void
+}
+
+class FoldedPhone extends Phone {
+    + FoldedPhone(brand: Brand)
+    + open(): void
+    + close(): void
+    + call(): void
+}
+
+class UpRightPhone extends Phone {
+    + UpRightPhone(brand: Brand)
+    + open(): void
+    + close(): void
+    + call(): void
+}
+
+
+}
+
+' --- 橋接關係 (The Bridge) ---
+Phone o-- Brand : 橋接 (組合關係)
+
+' --- 說明註解 ---
+note top of Phone : 抽象類別 (Abstraction)：\n持有一個 Brand 的引用，\n這就是連接兩個維度的「橋」。
+
+note top of Brand : 實作介面 (Implementor)：\n定義了品牌的基本行為，\n與手機類型維度分離。
+
+note bottom of FoldedPhone : 修正抽象 (Refined Abstraction)：\n擴展抽象類別，實作特定的手機類型，\n並透過品牌物件來執行動作。
+
+@enduml

@@ -1,0 +1,44 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Abstract base class defining the algorithm skeleton
+abstract class AbstractClass {
+  + templateMethod()
+  # {abstract} primitiveOperation1()
+  # {abstract} primitiveOperation2()
+  # hookOperation()
+}
+
+' Concrete subclass providing specific implementations
+class ConcreteClass {
+  # primitiveOperation1()
+  # primitiveOperation2()
+  # hookOperation()
+}
+
+' Inheritance relationship
+AbstractClass <|-- ConcreteClass : " extends"
+
+' Note explaining the template method's logic
+note right of AbstractClass::templateMethod
+  **templateMethod()** implementation:
+  
+  // 1. Invariant steps executed here
+  // 2. Defer to subclasses
+  primitiveOperation1();
+  primitiveOperation2();
+  
+  // 3. Optional hook
+  hookOperation();
+end note
+
+' Note explaining subclass responsibility
+note right of ConcreteClass
+  Implements the abstract 
+  primitive operations to carry 
+  out subclass-specific steps.
+  Can optionally override hookOperation().
+end note
+
+@enduml

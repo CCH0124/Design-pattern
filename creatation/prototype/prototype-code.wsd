@@ -1,0 +1,68 @@
+@startuml
+title 原型模式 (Prototype Pattern) - 物件複製系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #2980b9
+BorderColor #3498db
+}
+
+' --- 核心介面 (Java 內建) ---
+interface Cloneable {
+}
+
+' ==========================================
+' 1. 淺拷貝範例 (Shallow Copy - Sheep)
+' ==========================================
+package "淺拷貝實作 (Shallow Copy)" {
+class Sheep implements Cloneable {
+- name: String
+- age: int
+- color: String
+- friend: Sheep
++ Sheep(name, age, color)
++ clone(): Object
+}
+}
+
+' ==========================================
+' 2. 深拷貝範例 (Deep Copy)
+' ==========================================
+package "深拷貝實作 (Deep Copy)" {
+class DeepCloneableTarget implements Cloneable, Serializable {
+- cloneName: String
+- cloneClass: String
++ DeepCloneableTarget(name, cls)
++ clone(): Object
+}
+
+class DeepProtoType implements Cloneable, Serializable {
+    - name: String
+    - deepCloneableTarget: DeepCloneableTarget
+    + DeepProtoType()
+    + deepClone(): Object
+}
+
+
+}
+
+' --- 關係連線 ---
+' 淺拷貝：朋友屬性只是引用複製
+Sheep o-- Sheep : friend (引用指向相同對象)
+
+' 深拷貝：包含複雜物件
+DeepProtoType *-- DeepCloneableTarget : 組合
+
+' --- 說明註解 ---
+note top of Sheep : 淺拷貝：\n對於基本資料型態直接複製，\n對於引用類型則只複製地址，\n指向同一個物件實例。
+
+note bottom of DeepProtoType : 深拷貝 (推薦實作方式)：\n透過對象序列化 (Serialization) \n將整個物件寫入流再讀出，\n從而實現屬性物件的完整複製。
+
+note left of Cloneable : Java 原生支援：\n實作此標記介面後，\n即可呼叫 Object.clone()。
+
+@enduml

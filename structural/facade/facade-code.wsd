@@ -1,0 +1,91 @@
+@startuml
+title 外觀模式 (Facade Pattern) - 家庭劇院系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+skinparam class {
+BackgroundColor White
+ArrowColor #e74c3c
+BorderColor #c0392b
+}
+
+' --- 外觀類別 (Facade) ---
+class HomeTheaterFacade {
+- amp: Amplifier
+- tuner: Tuner
+- player: StreamingPlayer
+- projector: Projector
+- lights: TheaterLights
+- screen: Screen
+- popper: PopcornPopper
++ HomeTheaterFacade(amp, tuner, player, projector, screen, lights, popper)
++ watchMovie(movie: String): void
++ endMovie(): void
++ listenToRadio(frequency: double): void
++ endRadio(): void
+}
+
+' --- 子系統類別 (Subsystems) ---
+package "子系統組件 (Subsystem Components)" {
+class Amplifier {
++ on(): void
++ off(): void
++ setStreamingPlayer(p: StreamingPlayer): void
++ setSurroundSound(): void
++ setVolume(level: int): void
+}
+
+class StreamingPlayer {
+    + on(): void
+    + off(): void
+    + play(movie: String): void
+    + stop(): void
+}
+
+class Projector {
+    + on(): void
+    + off(): void
+    + wideScreenMode(): void
+}
+
+class TheaterLights {
+    + on(): void
+    + dim(level: int): void
+}
+
+class Screen {
+    + up(): void
+    + down(): void
+}
+
+class PopcornPopper {
+    + on(): void
+    + off(): void
+    + pop(): void
+}
+
+class Tuner {
+    + on(): void
+    + off(): void
+    + setFrequency(f: double): void
+}
+
+
+}
+
+' --- 關係連線 ---
+HomeTheaterFacade --> Amplifier : 組合
+HomeTheaterFacade --> StreamingPlayer : 組合
+HomeTheaterFacade --> Projector : 組合
+HomeTheaterFacade --> TheaterLights : 組合
+HomeTheaterFacade --> Screen : 組合
+HomeTheaterFacade --> PopcornPopper : 組合
+HomeTheaterFacade --> Tuner : 組合
+
+note top of HomeTheaterFacade : 外觀類別：\n將子系統的複雜呼叫封裝成\n簡單的高層介面（例如 watchMovie）。
+
+note bottom of Amplifier : 子系統元件：\n包含各個設備的細節邏輯，\n外觀類別負責協調它們。
+
+@enduml

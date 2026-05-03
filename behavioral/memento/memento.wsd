@@ -1,0 +1,53 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define the Originator
+class Originator {
+  - state
+  + CreateMemento(): Memento
+  + SetMemento(m: Memento)
+}
+
+' Define the Memento
+class Memento {
+  - state
+  + GetState()
+  + SetState()
+}
+
+' Define the Caretaker
+class Caretaker {
+}
+
+' Relationships
+Originator .right.> Memento : " creates >"
+Caretaker o-right-> Memento : " keeps safe >"
+
+' Notes for logic explanation
+note left of Originator::CreateMemento
+  **CreateMemento()**
+  ""return new Memento(state)""
+end note
+
+note left of Originator::SetMemento
+  **SetMemento(m)**
+  ""state = m->GetState()""
+end note
+
+note bottom of Caretaker
+  **Caretaker**
+  Is responsible for the 
+  memento's safekeeping.
+  Never operates on or examines 
+  the contents of a memento.
+end note
+
+note bottom of Memento
+  **Memento**
+  Stores internal state of the Originator.
+  Protects against access by objects 
+  other than the Originator (Opaque).
+end note
+
+@enduml

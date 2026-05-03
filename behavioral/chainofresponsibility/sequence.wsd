@@ -1,0 +1,37 @@
+@startuml
+skinparam maxMessageSize 150
+
+participant "Client\n(Sender)" as Client
+participant "Handler 1\n(L1 Support)" as H1
+participant "Handler 2\n(L2 Support)" as H2
+participant "Handler 3\n(L3 Support)" as H3
+
+Client -> H1 : HandleRequest()
+activate H1
+note right of H1
+  Evaluates the request.
+  Condition not met, cannot handle it.
+end note
+
+H1 -> H2 : HandleRequest()\n// Forward to successor
+activate H2
+note right of H2
+  Evaluates the request.
+  Condition not met, cannot handle it.
+end note
+
+H2 -> H3 : HandleRequest()\n// Forward to successor
+activate H3
+note right of H3
+  Condition met! 
+  Successfully handles the request.
+end note
+
+H3 --> H2 : return success
+deactivate H3
+H2 --> H1 : return success
+deactivate H2
+H1 --> Client : return success
+deactivate H1
+
+@enduml

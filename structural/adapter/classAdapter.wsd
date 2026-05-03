@@ -1,24 +1,43 @@
-note top of Voltage220 : 被適配
-class Voltage220 {
-    + void output220V()
-}
-note top of Voltage5V : 適配接口
-interface Voltage5V {
-    + void output5V()
-}
-note top of VoltageAdapter : 適配器類
-class VoltageAdapter extends Voltage220 implements Voltage5V {
+@startuml
+title 轉接器模式 (Adapter Pattern) - 電壓轉換系統
 
-}
-
-class Phone {
-    + void charging()
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+skinparam class {
+BackgroundColor White
+ArrowColor #d35400
+BorderColor #e67e22
 }
 
-class Client {
-
+' ==========================================
+' 1. 類別轉接器模式 (Class Adapter)
+' 使用繼承 (Inheritance) 來連結 Adaptee
+' ==========================================
+package "類別轉接器 (Class Adapter)" {
+class "Voltage220V" as C_Adaptee {
++ output220V(): int
 }
 
-Phone ..> Voltage5V
-Client ..> Phone
-Client ..> VoltageAdapter
+interface "IVoltage5V" as C_Target {
+    + {abstract} output5V(): int
+}
+
+class "VoltageAdapter" as C_Adapter {
+    + output5V(): int
+}
+
+class "Phone" as C_Client {
+    + charging(i: IVoltage5V): void
+}
+
+
+' 關係連線
+C_Adapter -up-|> C_Adaptee : 繼承 (Inheritance)
+C_Adapter .up.|> C_Target : 實作 (Implementation)
+C_Client ..> C_Target : 依賴 (Dependency)
+
+
+}
+@enduml

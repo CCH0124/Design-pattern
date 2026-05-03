@@ -1,56 +1,55 @@
 # 建造者模式 (Builder Pattern)
-1. 建造者模式的核心定義
-    建造者模式的主要目的是：**將一個複雜產品的建構過程封裝起來，並允許它被分步驟地（in steps）建立出來**。
 
-    **問題場景：**
-    想像我們正在為一個名為「Patternsland」的主題樂園開發「假期行程規劃器 (Vacation Planner)」系統。每位遊客的行程規劃都可能截然不同：有些在地遊客只要訂晚餐與特殊活動，而有些從外地飛來的遊客則需要訂飯店、樂園門票以及餐廳預約。
-    
-    這意味著「假期行程表」是一個包含好幾天（第一天、第二天等），且每天充滿不同組合（飯店、門票、特殊活動等）的複雜資料結構。如果我們試圖用單一一個步驟（例如一個巨型 Constructor 傳入幾十個參數）來建立這個物件，不僅將複雜的建立步驟與物件本身混在一起，程式碼也會變得難以維護且缺乏彈性。
-    
-    **解決方案：**
-    如同我們透過迭代器（Iterator）封裝走訪集合的邏輯，這裡我們可以把「建立行程表」的細節封裝在一個獨立的「建造者 (Builder)」物件中。客戶端只需向建造者下達指令，要求建造者去建構行程表結構即可。
+在建構複雜的系統物件，例如：需要掛載多種安全協定的網路連線物件、解析複雜的 RTF 轉換文件、或是規劃包含飯店與機票的旅遊行程時，如果我們把所有的組裝邏輯與細節都塞在一個巨大的建構子 (Constructor) 裡面，程式碼會變得極度混亂且難以維護。
 
+為了解決這個問題，**建造者模式 (Builder Pattern)** 提供了一種優雅的架構設計。
 
-2. 系統架構與流程圖
+1. 建造者模式的核心概念
 
-    在建造者模式中，我們通常會有一個抽象的 `AbstractBuilder` 定義建構步驟，以及一個具體的 `VacationBuilder` 來負責真正的物件生成，而 `Client` (客戶端) 負責指揮建構的流程。
-    
-    ```text
-    (1) 指揮建構步驟
-    [ Client (客戶端) ] -----------------------------------+
-           |                                             |
-           |                                             v
-           |  (2) 呼叫建構方法 (buildDay, addHotel...) [ AbstractBuilder (抽象建造者) ]
-           +-----------------------------------------> + buildDay()
-                                                       + addHotel()
-                                                       + addReservation()
-                                                       + addSpecialEvent()
-                                                       + addTickets()
-                                                       + getVacationPlanner()
-                                                               ^
-                                                               | 實作
-                                                               |
-                                                       [ VacationBuilder (具體建造者) ]
-                                                       + constructPlanner()
-                                                       + (實作各項 add 方法)
-                                                       + vacation (內部持有的複雜物件結構)
-    ```
+    **定義：** 將一個複雜物件的建構過程與它的具體表示分離，使得同樣的建構過程可以建立出不同的表示方式 (Separate the construction of a complex object from its representation so that the same construction process can create different representations)。
 
-   1. **Client (客戶端)：** 透過抽象介面指揮 Builder 一步步建立產品（例如先加一天、再加飯店、再加門票）。
-   2. **AbstractBuilder (抽象介面)：** 提供建立複雜物件所需的各種操作步驟與方法。
-   3. **ConcreteBuilder (具體建造者)：** 負責實際產生真正的產品，並將它們儲存到最終的複雜結構（例如 Vacation composite 結構）中，最後提供一個取得完成品的方法 (`getVacationPlanner()`)。
+    簡單來說，建造者模式將物件的*製作步驟*交給一個稱為**指揮者 (Director)** 的角色來控管，而*每個步驟的具體實作*則交給**建造者 (Builder)** 來完成。這樣一來，同樣的指揮流程，只要換上不同的建造者，就能生產出完全不同的複雜產品。
 
-3. 工程師視角總結
+2. 背後支撐的核心設計原則
 
-    建造者模式在分散式系統的設定檔解析、複雜 ORM (Object-Relational Mapping) 查詢建構，或是建立複雜 UI 樹狀結構中非常常見。根據書中整理，它的優缺點如下：
+    我們重視架構的解耦與擴充性。建造者模式完美體現了以下幾個物件導向設計原則：
 
-    **主要優點 (Benefits)：**
-    * **封裝複雜性：** 將複雜物件的建構方式與細節封裝起來，向客戶端隱藏了產品的內部表示方式。
-    * **支援多步驟建構：** 允許物件透過一個多步驟且可變的過程來建立（這與通常只能「一步到位」產生物件的工廠模式不同）。
-    * **輕易替換實作：** 因為客戶端只看得到抽象的 Builder 介面，因此我們可以輕易抽換不同的具體建造者來產生不同設定的產品實作。
+    1. 封裝變動的部分 (Encapsulate what varies)
+    在系統中，複雜物件的*內部結構*與*如何被組裝出來的細節*是經常變動的。建造者模式將這些會變動的建構與表示邏輯封裝在具體的建造者中，藉此提高模組化程度，並向客戶端隱藏產品的內部結構。
 
-    **主要缺點與應用場景 (Uses and Drawbacks)：**
-    * **常用於組合模式 (Composite)：** 建造者模式經常被用來建立樹狀的複合結構 (Composite structures)。
-    * **客戶端需要更多領域知識：** 與工廠模式 (Factory) 相比，使用 Builder 時，客戶端必須知道如何一步步指揮建造者（例如必須知道先建立日期 `buildDay`，再加飯店 `addHotel`），這意味著建構物件會比使用工廠模式需要客戶端具備更多的領域知識 (Domain Knowledge)。
+    2. 針對介面寫程式，而不是針對實作寫程式 (Program to an interface, not an implementation)
+    指揮者 (Director) 只依賴抽象的 `Builder` 介面來指示建構步驟，完全不知道背後具體是哪一個類別在進行實作。這讓我們只要抽換不同的具體建造者（例如將 `ASCIIConverter` 換成 `TeXConverter`），就能在不修改指揮者程式碼的情況下，產生不同的內部表示。
 
-    總結來說，如果你發現你在建立一個物件時，建構子的參數越來越多，或者需要經過複雜的邏輯與分步驟拼湊才能得到一個完整結構時，引入「建造者模式」會是讓系統保持彈性且乾淨的最佳選擇。
+    3. 單一職責原則 (Single Responsibility Principle)
+    建造者模式將*決定建構步驟的流程邏輯*與*真正實作組裝細節的邏輯*徹底分離。每個類別專注於自己的單一職責，避免了龐大的上帝類別 (God Class) 產生。
+
+3. 建造者模式類別圖 (Class Diagram)
+
+    ![builder pattern Class Diagram](../../docs/diagrams/out/__WorkspaceFolder__/creatation/builder/builder/builder.png)
+
+    系統角色拆解與運作流程：
+    * **`Builder` (抽象建造者介面)：** 指定了建立 `Product` 物件各個零件的抽象介面。
+    * **`ConcreteBuilder` (具體建造者)：** 實作 `Builder` 介面，負責實際建構並組裝產品的各個零件。它會追蹤自己建立的表示方式，並提供一個（例如 `GetResult()`）取得最終產品的方法。
+    * **`Director` (指揮者)：** 透過 `Builder` 介面來建構物件。它負責控制建構的「步驟與順序」。
+    * **`Product` (產品)：** 代表正在被建構的複雜物件。
+    * **運作流程：** 客戶端 (Client) 建立一個 Director 並配置一個期望的 ConcreteBuilder；接著 Director 依照固定流程呼叫 Builder 的組裝方法；最後，客戶端直接向 Builder 索取建構完成的產品。
+
+4. 總結
+
+    在進行架構設計時，很多工程師會把 **建造者模式 (Builder)** 跟 **抽象工廠模式 (Abstract Factory)** 搞混，因為它們都在負責建立複雜物件。
+
+    我們區分它們的核心在於**控制的精細度**：
+    * **Abstract Factory** 的重點在於建立*一系列相關的產品家族*。工廠通常在一個步驟（One shot）內就把產品建立出來並立即回傳。
+    * **Builder** 的重點則在於**一步一步 (step by step)**地建構出一個複雜的物件。產品的建構是在 Director 的細緻控制下進行的，直到所有組裝步驟都完成後，Builder 才會在最後一個步驟交出最終產品。這賦予了系統工程師對建構過程與內部結構極高的控制權。
+
+5. 範例程式碼類別圖
+
+    ![](../../docs/diagrams/out/__WorkspaceFolder__/creatation/builder/builder-code/builder-code.png)
+
+    1. 零件與整體的解耦：`Hourse` 物件（產品）的組成零件（地基、牆、屋頂）與其建造演算法完全分離。
+
+    2. 指揮者 (Director) 的角色：在 `HourseDirector` 中，`constructHourse()` 方法封裝了蓋房子的步驟順序。客戶端只需要告訴指揮者*我想要哪種建造者*，指揮者就會負責把房子蓋好。
+
+    3. 靈活性與擴充性：如果需要增加一種新的建築類型，例如別墅，只需新增一個繼承 `HourseBuilder` 的具體實作類別即可，不需要修改 `HourseDirector` 或 `Hourse` 的代碼，符合開閉原則。
+
+    4. 精細控制：相較於傳統的建構子，建造者模式允許一步步建立物件，並在最後一刻（`buildHourse()`）才獲取完整的產品實體。

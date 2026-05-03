@@ -1,54 +1,57 @@
-interface Iterator {
-    + hasNext(): boolean
-    + next(): E
-    + remove(): void
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define Interfaces
+interface Aggregate <<interface>> {
+  + createIterator(): Iterator
 }
 
-class ComputerCollegeIterator implements Iterator {
-
+interface Iterator <<interface>> {
+  + first()
+  + next()
+  + isDone(): boolean
+  + currentItem(): Object
 }
 
-class InfoCollegeIterator implements Iterator {
-    
+' Define Concrete Classes
+class ConcreteAggregate {
+  - elements
+  + createIterator(): Iterator
 }
 
-class Department {
-
+class ConcreteIterator {
+  - aggregate: ConcreteAggregate
+  - currentPosition: int
+  + first()
+  + next()
+  + isDone(): boolean
+  + currentItem(): Object
 }
-
-
-ComputerCollegeIterator o-- Department
-InfoCollegeIterator o-- Department
-
-interface College {
-    + createIterator(): Iterator
-}
-
-class ComputerCollege implements College{
-
-}
-
-ComputerCollege ..> ComputerCollegeIterator
-
-class InfoCollege implements College {
-    
-}
-
-InfoCollege ..> InfoCollegeIterator
-
-ComputerCollege o-- Department
-InfoCollege o-- Department
-
-' note 完成對所有學院輸出
-class OutpuImpl {
-
-}
-
-OutpuImpl o-- College
 
 class Client {
-
 }
 
-Client ..> OutpuImpl
-Client ..> Iterator
+' Relationships
+Aggregate <|.. ConcreteAggregate : " implements"
+Iterator <|.. ConcreteIterator : " implements"
+
+Client -> Aggregate : " requests iterator"
+Client -> Iterator : " traverses elements"
+
+ConcreteAggregate .right.> ConcreteIterator : " instantiates"
+ConcreteIterator -left-> ConcreteAggregate : " keeps track of current position"
+
+note bottom of ConcreteAggregate
+  **createIterator()** implementation:
+  ""return new ConcreteIterator(this)""
+end note
+
+note bottom of ConcreteIterator
+  Implements the traversal logic 
+  and maintains the current 
+  position in the traversal 
+  of the aggregate.
+end note
+
+@enduml

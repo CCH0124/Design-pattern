@@ -1,131 +1,43 @@
-# 代理模式(Proxy Pattern)
+# 代理模式 (Proxy Pattern)
 
-1. 代理模式的核心定義
+在分散式系統架構、微服務通訊（如 gRPC 或 RMI），或是處理極度消耗資源的物件（如資料庫連線池、大型檔案載入）時，我們經常需要一個「中間人」來幫我們打理底層的複雜細節、網路通訊或權限控管。
 
-    **代理模式的定義：** 為另一個物件提供一個替身（Surrogate）或佔位符（Placeholder），以控制對這個物件的存取。
+這時候，**代理模式 (Proxy Pattern)** 就是我們系統架構中的幫手。
 
-    你可以把代理人想像成系統中的「關卡」或「經紀人」。當客戶端（Client）想要呼叫某個物件（RealSubject）時，它不直接跟該物件溝通，而是透過代理物件（Proxy）來傳達。
+1. 代理模式的核心概念
 
-    ```text
-        請求 (Request)
-    [Client] ----------------> [ Subject 介面 ]
-                                    ^
-                                    | 實作
-                    +---------------+---------------+
-                    |                               |
-            [ Proxy (代理) ] ------------> [ RealSubject (真實物件) ]
-                    |           委派呼叫            |
-        (負責: 網路通訊/權限檢查/快取等)      (負責: 真正執行核心業務邏輯)
-    ```
+    **定義：** 代理模式為另一個物件提供一個代理人（Surrogate）或佔位符（Placeholder），以便控制對該物件的存取。
 
-   Proxy 與 RealSubject 都實作了相同的 `Subject` 介面，所以對 Client 來說，它根本感覺不到自己是在跟 Proxy 講話，還是跟真實物件講話。
-   
-   > 代理模式可以建立代表物件，用來控制對另一個物件的接觸，另一個物件可能在遠端、或建造成本高昂，或需要做安全控管。
+    你可以把代理模式想像成明星與經紀人的關係。客戶端（粉絲或廠商）不會直接聯絡明星本人（RealSubject），而是透過經紀人（Proxy）來溝通。經紀人會過濾請求、處理合約（網路通訊），只有在必要時才把工作交給明星本人來做。
 
-2. 代理模式的三大應用場景
+    在系統工程實務上，代理模式有幾種非常經典的變體：
+    1. **遠端代理 (Remote Proxy)：** 為位於不同位址空間（例如另一台伺服器）的物件提供區域代表。代理物件負責將方法呼叫打包並透過網路傳送給真正的遠端物件。
+    2. **虛擬代理 (Virtual Proxy)：** 作為一個需要花費高昂代價才能建立的物件的替身。它會將物件的建立延遲到真正需要時才進行（也就是延遲載入 / Lazy Loading）。
+    3. **保護代理 (Protection Proxy)：** 根據呼叫者的角色或權限，控制對原始物件特定方法的存取。
+    4. **智慧參考代理 (Smart Reference Proxy)：** 當物件被存取時，執行額外的動作，例如計算該物件被參考的次數（Reference counting）或是實作寫入時複製（Copy-on-write）機制。
 
-    * 遠端代理 (Remote Proxy)
-        * **應用場景：** 控制對「遠端物件」的存取（例如微服務架構中的 RPC/RMI 通訊）。
-        * 當物件存在於不同的 JVM 或不同的伺服器記憶體中，我們不能直接呼叫它。遠端代理扮演*本地代表*的角色，它攔截客戶端的本地呼叫，將其打包成網路封包，透過網路傳送給伺服器端的接收者（Skeleton/Service Helper），再將結果回傳-。
-        * **優點：** 將複雜的網路通訊、例外處理（如斷線、Timeout）隱藏起來，讓客戶端寫扣就像在呼叫本地端物件一樣。
+2. 代理模式背後的核心設計原則
 
-    * 虛擬代理 (Virtual Proxy)
-        * **應用場景：** 控制對「創建成本高昂的物件」的存取（延遲載入 Lazy Loading）。
-        * 作為系統工程師，我們很怕浪費記憶體與 CPU 去建立使用者根本還沒看到的圖檔或複雜運算。虛擬代理會先「假裝」這個物件存在，只有當使用者真正需要（例如滾動到該圖片）時，代理才會去實例化真實的物件。
+    代理模式之所以能在不修改現有系統邏輯的前提下，無縫切入並增加強大功能，是因為它嚴格遵守了以下幾個物件導向設計原則：
 
-    * **程式碼範例 (圖片延遲載入)：**
-        假設我們要從網路下載大張專輯封面。
+    1. 針對介面寫程式，而不是針對實作寫程式 (Program to an interface, not an implementation)
+        * 代理物件 (Proxy) 與真實物件 (RealSubject) 都必須實作相同的 `Subject` 介面。
+        * **架構優勢：** 對客戶端 (Client) 而言，代理物件跟真實物件看起來是一模一樣的。客戶端只需針對 `Subject` 介面呼叫方法，完全不需要知道它正在跟一個代理人溝通，這達成了極高的*透明性*。
 
-        ```java
-        class ImageProxy implements Icon {
-            private ImageIcon imageIcon; // 真實物件 (創建成本高)
-            private URL imageURL;
-            private boolean retrieving = false;
+    2. 多用物件合成，少用繼承 (Favor composition over inheritance)
+        * 代理物件內部會持有一個指向真實物件的參考 (Reference)。
+        * **架構優勢：** 代理物件不透過繼承來獲得真實物件的行為，而是透過*合成 (Composition)」將請求「轉發 / 委派 (Delegate)*給真實物件處理。這使得代理物件能夠在轉發請求的前後，輕易地插入自己的邏輯（例如權限檢查或網路連線）。
 
-            public ImageProxy(URL url) { this.imageURL = url; }
+    3. 單一職責原則 (Single Responsibility Principle) 與 關注點分離
+        * 這點在系統架構上尤為重要。真實物件只需要專注於*核心業務邏輯*；而代理物件則專注於*非功能性需求 (Non-functional requirements)*，例如：網路傳輸細節、記憶體快取、存取權限控管等。這樣可以避免核心業務代碼被底層基礎設施邏輯污染。
 
-            public void paintIcon(Component c, Graphics g, int x, int y) {
-                if (imageIcon != null) {
-                    // 如果圖片已經下載好，直接委派給真實物件去畫
-                    imageIcon.paintIcon(c, g, x, y);
-                } else {
-                    // 圖片還沒好之前，代理物件先給個友善提示
-                    g.drawString("圖片載入中，請稍候...", x, y);
-                    
-                    if (!retrieving) {
-                        retrieving = true;
-                        // 開啟一個非同步執行緒去遠端下載，避免卡死主執行緒 (UI Thread)
-                        new Thread(new Runnable() {
-                            public void run() {
-                                try {
-                                    imageIcon = new ImageIcon(imageURL, "Album Cover");
-                                    c.repaint(); // 下載完成，觸發畫面重繪
-                                } catch (Exception e) { e.printStackTrace(); }
-                            }
-                        }).start();
-                    }
-                }
-            }
-        }
-        ```
+3. 代理模式類別圖 (proxy)
 
-    * 保護代理 (Protection Proxy) 與動態代理 (Dynamic Proxy)
-        * **應用場景：** 基於呼叫者的「權限」來決定是否放行存取。在系統安全與 RBAC (角色基礎存取控制) 經常使用。
-        * Java 內建了強大的反射機制 (`java.lang.reflect.Proxy`)，能在執行時期「動態」產生代理類別，這稱為**動態代理**。
-        * **程式碼範例 (約會網站權限控管)：**
-            規定：自己可以修改個人資料，但不能亂改自己的「阿宅評分(Geek Rating)」；別人不能改你的資料，但可以幫你打評分。
-
-            ```java
-            import java.lang.reflect.*;
-
-            // 透過 InvocationHandler 處理攔截邏輯 (這是給「本人」用的權限處理器)
-            public class OwnerInvocationHandler implements InvocationHandler {
-                Person person; // 真實物件
-                
-                public OwnerInvocationHandler(Person person) {
-                    this.person = person;
-                }
-
-                // 所有對 Proxy 的方法呼叫，都會統一進入這個 invoke() 函式
-                public Object invoke(Object proxy, Method method, Object[] args) throws IllegalAccessException {
-                    try {
-                        if (method.getName().startsWith("get")) {
-                            // 允許本人查詢任何資料
-                            return method.invoke(person, args);
-                        } else if (method.getName().equals("setGeekRating")) {
-                            // 拒絕！本人不允許自己給自己打分數
-                            throw new IllegalAccessException("你不能修改自己的評分！");
-                        } else if (method.getName().startsWith("set")) {
-                            // 允許本人修改其他個人資料
-                            return method.invoke(person, args);
-                        }
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            }
-            ```
-
-            接著，我們透過 Java 的 `Proxy.newProxyInstance` 在執行期把這個 Handler 綁定到真實物件上，產生安全的 Proxy 物件-。
-
-3. 常見的混淆：Proxy vs. Decorator (代理 vs. 裝飾者)
-
-    這兩者結構長得幾乎一樣（都是包裝另一個物件），但**意圖（Intent）完全不同**：
-
-    * **Decorator (裝飾者模式)：** 著重於為物件**動態加上新的行為或功能**（例如幫咖啡加上摩卡的價格與敘述）。
-    * **Proxy (代理模式)：** 著重於**控制對物件的存取**（例如檢查權限、網路傳輸、延遲載入）。它通常不會改變原本物件的行為，而是管理客戶端能不能/何時能呼叫到真實物件。
+    ![proxy pattern proxy](../../docs/diagrams/out/__WorkspaceFolder__/structural/proxy/proxy/proxy.png)
 
 4. 總結
 
-   代理模式的本質就是在客戶端與實際資源之間加入一個「中介層（Indirection Layer）」。藉由這個中介層，輕鬆掛載**快取代理 (Caching Proxy)** 來節省昂貴的資料庫運算、使用**防火牆代理 (Firewall Proxy)** 來抵擋惡意請求，或透過**同步代理 (Synchronization Proxy)** 確保多執行緒安全-。
+    * Proxy vs. Decorator (裝飾者模式)： 這兩者的類別圖非常相似，但目的完全不同。裝飾者模式的目的是為物件*動態加上新的行為與責任*，而代理模式的目的是*控制對物件的存取*
+    * Proxy vs. Adapter (轉接器模式)： 轉接器會改變物件的介面以符合客戶端的期望，而代理模式則是提供與真實物件完全相同的介面
 
-   這也是為何代理模式是在構建現代複雜、分散且安全的高併發系統時，最不可或缺的底層設計模式之一。
-
-   Java 框架的一些代理模式的示例：
-
-   * java.lang.reflect.Proxy
-   * java.rmi.*
-   * javax.ejb.EJB （查看评论）
-   * javax.inject.Inject （查看评论）
-   * javax.persistence.PersistenceContext
+    在實際的微服務架構開發中，你幾乎每天都在使用代理模式。當你透過 `gRPC` 或 `REST API` 呼叫另一個服務時，你所操作的 `Stub` 類別就是一個 **遠端代理 (Remote Proxy)**。當你使用 `Hibernate` 或 `JPA` 等 ORM 框架從資料庫讀取一筆資料，且該資料包含龐大的關聯表時，框架通常會回傳一個 **虛擬代理 (Virtual Proxy)**，直到你真正呼叫 getter 時才會發送 SQL 去資料庫把關聯資料撈回來。代理模式能讓我們的系統既保持物件導向的優雅，又能精準掌控底層資源。

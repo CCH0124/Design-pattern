@@ -1,0 +1,54 @@
+@startuml
+title 享元模式 (Flyweight Pattern) - 網站共享系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #2c3e50
+BorderColor #34495e
+}
+
+' --- 外部狀態 (Extrinsic State) ---
+class User {
+- name: String
++ User(name: String)
++ getName(): String
+}
+
+' --- 享元抽象介面 (Flyweight) ---
+abstract class WebSite {
++ {abstract} use(user: User): void
+}
+
+' --- 具體享元類別 (Concrete Flyweight) ---
+class ConcreteWebSite extends WebSite {
+- type: String  // 內部狀態 (Intrinsic State)
++ ConcreteWebSite(type: String)
++ use(user: User): void
+}
+
+' --- 享元工廠 (Flyweight Factory) ---
+class WebSiteFactory {
+- pool: HashMap<String, ConcreteWebSite>
++ getWebSiteCategory(type: String): WebSite
++ getWebSiteCount(): int
+}
+
+' --- 關係連線 ---
+WebSiteFactory o-- WebSite : 管理與提供 (聚合關係)
+WebSite ..> User : 依賴 (使用外部狀態)
+
+' --- 說明註解 ---
+note top of WebSite : 享元抽象類別：\n定義了物件的外部狀態介面。
+
+note right of ConcreteWebSite : 內部狀態 (type)：\n存儲在物件內部，不會隨環境改變，\n是可以被共享的部分。
+
+note bottom of User : 外部狀態：\n隨環境改變而改變的部分，\n不應被共享，而是由客戶端傳入。
+
+note left of WebSiteFactory : 享元工廠：\n負責建立與管理享元池，\n確保相同的內容只會被建立一次。
+
+@enduml

@@ -1,37 +1,58 @@
-note top of Hourse : product
-class Hourse {
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
 
+' Define the Director
+class Director {
+  - builder: Builder
+  + Construct()
 }
 
-class HourseBuilder {
-    + Hourse hourse
-    + void buildBasic
-    + void buildWalls
-    + void roofed
-    + Hourse build
+' Define the abstract Builder interface
+interface Builder <<interface>> {
+  + BuildPartA()
+  + BuildPartB()
+  + BuildPartC()
+  + GetResult(): Product
 }
 
-note left of CommonHourse : ConcreteBuilder
-class CommonHourse extends HourseBuilder {
-
-} 
-note left of HighBuilding : ConcreteBuilder
-class HighBuilding extends HourseBuilder {
-    
-} 
-
-class HourseDirector {
-    HourseBuilder hourseBuilder
+' Define the Concrete Builder
+class ConcreteBuilder {
+  - product: Product
+  + BuildPartA()
+  + BuildPartB()
+  + BuildPartC()
+  + GetResult(): Product
 }
 
+' Define the complex Product
+class Product {
+  ' Complex internal representation
+}
+
+' Define the Client
 class Client {
-
 }
 
-HourseDirector o-- HourseBuilder
+' Relationships
+Client .right.> Director : " configures with Builder"
+Client .down.> ConcreteBuilder : " creates"
+Director o-right-> Builder : " delegates to"
+Builder <|.. ConcreteBuilder : " implements"
+ConcreteBuilder .right.> Product : " builds & returns"
 
-Client ..> HourseDirector
-Client ..> CommonHourse
-Client ..> HighBuilding
+' Notes for operational logic
+note bottom of Director
+  **Director::Construct()**
+  ""for all objects in structure {""
+  ""  builder->BuildPart();""
+  ""}""
+end note
 
-HourseBuilder *-- Hourse
+note bottom of ConcreteBuilder
+  Builds the product's internal
+  representation and provides an
+  interface for retrieving it.
+end note
+
+@enduml

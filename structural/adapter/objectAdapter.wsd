@@ -1,27 +1,49 @@
-note left of Voltage220 : 被適配
-class Voltage220 {
-    + void output220V()
-}
-note left of Voltage5V : 適配接口
-interface Voltage5V {
-    + void output5V()
-}
-note right of VoltageAdapter : 適配器類
-class VoltageAdapter implements Voltage5V {
-    - Voltage220 voltage220
-    + VoltageAdapter(Voltage220 voltage220)
+@startuml
+title 轉接器模式 (Adapter Pattern) - 電壓轉換系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+skinparam class {
+BackgroundColor White
+ArrowColor #d35400
+BorderColor #e67e22
 }
 
-class Phone {
-    + void charging(Voltage5V voltage5V)
+' ==========================================
+' 2. 物件轉接器模式 (Object Adapter)
+' 使用組合 (Composition) 來連結 Adaptee
+' ==========================================
+package "物件轉接器 (Object Adapter)" {
+class "Voltage220V" as O_Adaptee {
++ output220V(): int
 }
 
-class Client {
+interface "IVoltage5V" as O_Target {
+    + {abstract} output5V(): int
+}
+
+class "VoltageAdapter" as O_Adapter {
+    - voltage220V: Voltage220V
+    + VoltageAdapter(v: Voltage220V)
+    + output5V(): int
+}
+
+class "Phone" as O_Client {
+    + charging(i: IVoltage5V): void
+}
+
+' 關係連線
+O_Adapter o-- O_Adaptee : 組合 (Composition/Aggregation)
+O_Adapter .up.|> O_Target : 實作 (Implementation)
+O_Client ..> O_Target : 依賴 (Dependency)
+
 
 }
 
-Phone ..> Voltage5V
-VoltageAdapter o-- Voltage220
-Client ..> Phone
-Client ..> VoltageAdapter
-Client ..> Voltage5V
+' --- 說明註解 ---
+note top of C_Adapter : 類別轉接器：\n透過繼承被轉接者類別，\n並實作目標介面。
+note top of O_Adapter : 物件轉接器：\n持有被轉接者的實例 (Has-a)，\n比繼承更具彈性且符合合成複用原則。
+
+@enduml

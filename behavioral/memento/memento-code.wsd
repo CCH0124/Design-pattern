@@ -1,0 +1,52 @@
+@startuml
+title 備忘錄模式 (Memento Pattern) - 狀態備份系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #2980b9
+BorderColor #3498db
+}
+
+' --- 備忘錄 (Memento) ---
+class Memento {
+- state: String
++ Memento(state: String)
++ getState(): String
+}
+
+' --- 發起人 (Originator) ---
+class Originator {
+- state: String
++ setState(state: String): void
++ getState(): String
++ saveStateToMemento(): Memento
++ getStateFromMemento(memento: Memento): void
+}
+
+' --- 管理者 (Caretaker) ---
+class Caretaker {
+- mementoList: List
++ add(memento: Memento): void
++ get(index: int): Memento
+}
+
+' --- 關係連線 ---
+' 發起人建立備忘錄
+Originator ..> Memento : 建立 (Creates)
+
+' 管理者管理多個備忘錄物件
+Caretaker o-- Memento : 聚合管理 (Stores)
+
+' --- 說明註解 ---
+note top of Originator : 發起人 (Originator)：\n負責建立一個備忘錄，\n用以記錄當前時刻的內部狀態，\n並可使用備忘錄恢復內部狀態。
+
+note right of Memento : 備忘錄 (Memento)：\n負責存儲發起人物件的內部狀態。\n根據發起人決定儲存哪些內部狀態。
+
+note bottom of Caretaker : 管理者 (Caretaker)：\n負責保存備忘錄，\n不能對備忘錄的內容進行操作或檢查。
+
+@enduml

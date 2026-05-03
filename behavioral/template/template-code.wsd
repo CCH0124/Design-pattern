@@ -1,0 +1,83 @@
+@startuml
+title 範本方法模式 (Template Method Pattern) - 咖啡因飲料系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #16a085
+BorderColor #1abc9c
+}
+
+' ==========================================
+' 1. 標準範本方法 (Standard Template)
+' ==========================================
+package "標準範本方法" {
+abstract class CaffeineBeverage {
++ prepareRecipe(): void <<final>>
++ {abstract} brew(): void
++ {abstract} addCondiments(): void
++ boilWater(): void
++ pourInCup(): void
+}
+
+class Coffee extends CaffeineBeverage {
+    + brew(): void
+    + addCondiments(): void
+}
+
+class Tea extends CaffeineBeverage {
+    + brew(): void
+    + addCondiments(): void
+}
+
+
+}
+
+' ==========================================
+' 2. 帶有鉤子的範本方法 (Template with Hook)
+' ==========================================
+package "進階範本方法 (Hook)" {
+abstract class CaffeineBeverageWithHook {
++ prepareRecipe(): void <<final>>
++ {abstract} brew(): void
++ {abstract} addCondiments(): void
++ boilWater(): void
++ pourInCup(): void
++ customerWantsCondiments(): boolean <<hook>>
+}
+
+class CoffeeWithHook extends CaffeineBeverageWithHook {
+    + brew(): void
+    + addCondiments(): void
+    + customerWantsCondiments(): boolean
+}
+
+class TeaWithHook extends CaffeineBeverageWithHook {
+    + brew(): void
+    + addCondiments(): void
+    + customerWantsCondiments(): boolean
+}
+
+
+}
+
+' --- 說明註解 ---
+note right of CaffeineBeverage::prepareRecipe
+範本方法：定義了演算法的步驟：
+1. boilWater()
+2. brew()
+3. pourInCup()
+4. addCondiments() end note
+
+note bottom of CaffeineBeverageWithHook
+鉤子 (Hook)：
+子類別可以選擇性覆寫
+customerWantsCondiments()
+來控制範本方法中的邏輯流。
+end note
+
+@enduml

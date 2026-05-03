@@ -1,0 +1,99 @@
+@startuml
+title 反覆器模式 (Iterator Pattern) - 學院系所遍歷系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #2980b9
+BorderColor #3498db
+}
+
+' --- 外部介面 (Standard Iterator) ---
+' 註：專案中使用的是 java.util.Iterator
+interface "Iterator" as JavaIterator {
++ hasNext(): boolean
++ next(): E
++ remove(): void
+}
+
+' --- 元素類別 ---
+class Department {
+- name: String
+- desc: String
++ getName(): String
++ getDesc(): String
+}
+
+' --- 反覆器實作 (Concrete Iterators) ---
+package "具體反覆器 (Concrete Iterators)" {
+class ComputerCollegeIterator implements JavaIterator {
+- departments: Department[]
+- position: int
++ ComputerCollegeIterator(departments: Department[])
++ hasNext(): boolean
++ next(): Object
+}
+
+class InfoCollegeIterator implements JavaIterator {
+    - departmentList: List<Department>
+    - index: int
+    + InfoCollegeIterator(list: List<Department>)
+    + hasNext(): boolean
+    + next(): Object
+}
+
+
+}
+
+' --- 聚合介面 (Aggregate Interface) ---
+interface College {
++ getName(): String
++ addDepartment(name: String, desc: String): void
++ createIterator(): Iterator
+}
+
+' --- 具體聚合類別 (Concrete Aggregates) ---
+package "具體學院 (Concrete Aggregates)" {
+class ComputerCollege implements College {
+- departments: Department[]
+- numberOfDepartments: int
++ createIterator(): Iterator
+}
+
+class InfoCollege implements College {
+    - departmentList: List<Department>
+    + createIterator(): Iterator
+}
+
+
+}
+
+' --- 客戶端 (Client/Service) ---
+class OutputImpl {
+- collegeList: List
++ OutputImpl(collegeList: List)
++ printCollege(): void
+- showDepartments(iterator: Iterator): void
+}
+
+' --- 關係連線 ---
+ComputerCollege ..> ComputerCollegeIterator : 建立
+InfoCollege ..> InfoCollegeIterator : 建立
+
+ComputerCollege o-- Department : 內部以陣列儲存
+InfoCollege o-- Department : 內部以列表儲存
+
+OutputImpl --> College : 依賴
+OutputImpl ..> JavaIterator : 使用
+
+note top of College : 聚合介面：\n定義建立反覆器的方法，\n將集合物件與遍歷演算法分離。
+
+note bottom of ComputerCollegeIterator : 具體反覆器：\n針對陣列 (Array) \n實現遍歷邏輯。
+
+note bottom of InfoCollegeIterator : 具體反覆器：\n針對列表 (List) \n實現遍歷邏輯。
+
+@enduml

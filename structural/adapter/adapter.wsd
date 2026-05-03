@@ -1,0 +1,38 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
+
+' Define the Client
+class Client {
+}
+
+' Define the Target interface
+interface Target <<interface>> {
+  + request()
+}
+
+' Define the Adaptee (the incompatible class)
+class Adaptee {
+  + specificRequest()
+}
+
+' Define the Adapter
+class Adapter {
+  - adaptee: Adaptee
+  + Adapter(a: Adaptee)
+  + request()
+}
+
+' Relationships
+Client -right-> Target : " Invokes method on Target"
+Adapter .up.|> Target : " Implements Target"
+Adapter o-right-> Adaptee : " Has-A (Composition)"
+
+' Note explaining the translation
+note bottom of Adapter
+  **Adapter::request()** internal implementation:
+  ""adaptee.specificRequest();""
+  (Translates Target request to Adaptee request)
+end note
+
+@enduml

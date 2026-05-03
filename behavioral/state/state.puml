@@ -1,27 +1,42 @@
 @startuml
-'https://plantuml.com/class-diagram
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
-
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+' The Context class maintains the current state
+class Context {
+  - state: State
+  + Request()
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+' The State interface defines the common behavior for all states
+interface State <<interface>> {
+  + Handle()
 }
 
+' Concrete states implement specific behaviors
+class ConcreteStateA {
+  + Handle()
+}
+
+class ConcreteStateB {
+  + Handle()
+}
+
+' Relationships
+Context o-right-> State : " Maintains current state"
+State <|.. ConcreteStateA : " Implements"
+State <|.. ConcreteStateB : " Implements"
+
+' Notes for logic explanation
+note bottom of Context
+  **Context::Request()** implementation:
+  ""state->Handle();""
+  (Delegates state-specific requests
+  to the current State object)
+end note
+
+note bottom of ConcreteStateA
+  Implements behavior associated
+  with a particular state of the Context.
+end note
 @enduml

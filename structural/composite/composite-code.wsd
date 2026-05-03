@@ -1,0 +1,88 @@
+@startuml
+title 組合模式 (Composite Pattern) - 餐廳菜單系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #d35400
+BorderColor #e67e22
+}
+
+' --- 抽象組件 (Component) ---
+abstract class MenuComponent {
++ add(menuComponent: MenuComponent): void
++ remove(menuComponent: MenuComponent): void
++ getChild(i: int): MenuComponent
++ getName(): String
++ getDescription(): String
++ getPrice(): double
++ isVegetarian(): boolean
++ print(): void
+}
+
+' --- 葉子節點 (Leaf) ---
+class MenuItem {
+- name: String
+- description: String
+- vegetarian: boolean
+- price: double
++ getName(): String
++ getDescription(): String
++ getPrice(): double
++ isVegetarian(): boolean
++ print(): void
+}
+
+' --- 容器節點 (Composite) ---
+class Menu {
+- menuComponents: List
+- name: String
+- description: String
++ add(menuComponent: MenuComponent): void
++ remove(menuComponent: MenuComponent): void
++ getChild(i: int): MenuComponent
++ getName(): String
++ getDescription(): String
++ print(): void
+}
+
+' --- 客戶端 (Client) ---
+class Waitress {
+- allMenus: MenuComponent
++ Waitress(allMenus: MenuComponent)
++ printMenu(): void
+}
+
+' --- 關係連線 ---
+MenuItem -up-|> MenuComponent : 繼承
+Menu -up-|> MenuComponent : 繼承
+Menu o-- MenuComponent : 遞迴組合 (持有一群組件)
+Waitress --> MenuComponent : 使用 (處理整個樹狀結構)
+
+' --- 說明註解 ---
+note right of MenuComponent
+抽象組件：
+定義了所有節點的共通介面。
+對於不適用的操作（如 Leaf 的 add），
+預設會拋出 UnsupportedOperationException。
+end note
+
+note bottom of Menu
+容器節點：
+可以包含 MenuItem 或其他的 Menu。
+其實作的 print() 會遞迴呼叫
+子組件的 print()。
+end note
+
+note top of Waitress
+客戶端：
+只需要與 MenuComponent 互動，
+無需關心當前物件是單一項目
+還是整個菜單組合。
+end note
+
+@enduml

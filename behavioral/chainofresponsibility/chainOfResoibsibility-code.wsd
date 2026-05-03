@@ -1,0 +1,62 @@
+@startuml
+title 責任鏈模式 (Chain of Responsibility Pattern) - 採購審核系統
+
+' --- 樣式設定 ---
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam packageStyle rectangle
+
+skinparam class {
+BackgroundColor White
+ArrowColor #e67e22
+BorderColor #d35400
+}
+
+' --- 請求類別 (Request) ---
+class PurchaseRequest {
+- amount: double
+- purpose: String
++ PurchaseRequest(amount: double, purpose: String)
++ getAmount(): double
++ getPurpose(): String
+}
+
+' --- 抽象處理者 (Handler) ---
+abstract class Approver {
+# nextApprover: Approver
++ setNextApprover(nextApprover: Approver): void
++ {abstract} processRequest(request: PurchaseRequest): void
+}
+
+' --- 具體處理者 (Concrete Handlers) ---
+package "審核階層 (Handlers)" {
+class Manager extends Approver {
++ processRequest(request: PurchaseRequest): void
+}
+
+class Director extends Approver {
+    + processRequest(request: PurchaseRequest): void
+}
+
+class CEO extends Approver {
+    + processRequest(request: PurchaseRequest): void
+}
+
+
+}
+
+' --- 關係連線 ---
+' 責任鏈的核心：處理者持有下一個處理者的引用 (自關聯)
+Approver o-- Approver : 下一個處理者 (Next)
+Approver ..> PurchaseRequest : 處理請求
+
+' --- 說明註解 ---
+note left of Approver : 抽象處理者：\n定義處理請求的介面，\n並維護指向下一個處理者的引用。
+
+note right of Manager : 具體處理者 (Manager)：\n處理金額 <= 1000 的申請，\n否則將請求轉交給 Director。
+
+note bottom of CEO : 具體處理者 (CEO)：\n責任鏈的末端，\n負責處理所有大額申請。
+
+note top of PurchaseRequest : 請求物件：\n封裝了審核所需的資訊\n(金額與用途)。
+
+@enduml

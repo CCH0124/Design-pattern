@@ -1,30 +1,46 @@
-' 命令角色，需要執行的所有命令，為抽象或接口類
-interface Command {
-    + void execute()
-    + void undo()
-}
-' 將一個接收者物件與一個動作綁定，調用接收者相應操作，實現 execute
-class ConcreteCommand extends Command{
-    + void execute()
-    + void undo()
-}
-' 接收者角色，知道如何實施和執行一個請求相關操作
-class Receiver {
+@startuml
+skinparam classAttributeIconSize 0
+skinparam maxMessageSize 150
 
-}
-' 調用者角色
-class Invoker {
-
-}
-
-
+' Define interfaces and classes
 class Client {
-
 }
 
+class Invoker {
+  - command: Command
+  + setCommand(cmd: Command)
+  + executeCommand()
+}
 
-ConcreteCommand o-- Receiver
-Invoker o-- Command
-Client ..> Invoker
-Client ..> Receiver
-Client ..> ConcreteCommand
+interface Command <<interface>> {
+  + execute()
+  + undo()
+}
+
+class ConcreteCommand {
+  - receiver: Receiver
+  + ConcreteCommand(r: Receiver)
+  + execute()
+  + undo()
+}
+
+class Receiver {
+  + action()
+}
+
+' Define relationships
+Client ..> ConcreteCommand : " creates"
+Client --> Receiver : " locates"
+Invoker o-> Command : " stores"
+Command <|.. ConcreteCommand : " implements"
+ConcreteCommand --> Receiver : " invokes action() on"
+
+' Add notes
+note right of ConcreteCommand::execute
+  receiver.action()
+end note
+
+note right of Invoker::executeCommand
+  command.execute()
+end note
+@enduml
